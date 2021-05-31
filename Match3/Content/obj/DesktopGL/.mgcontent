@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SourceFileCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Profile>Reach</Profile>
+  <Platform>DesktopGL</Platform>
+  <Config />
+  <SourceFiles>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/buttons/High_scores.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/buttons/No.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/buttons/Ok.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/buttons/Play.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/buttons/Quit.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/buttons/Yes.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/effects/blast.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/effects/destroyer_down.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/effects/destroyer_left.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/effects/destroyer_right.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/effects/destroyer_up.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/fields/field_1.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/text/Are you sure.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/text/Classic.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/text/Game_over.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/text/High_scores.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/text/Main_menu.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/text/Match_3.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/circle/circle.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/circle/circle_bomb.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/circle/circle_linehor.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/circle/circle_linevert.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/circle/circle_shine1.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/circle/circle_shine2.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/circle/circle_shine3.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/crystall/crystall.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/crystall/crystall_bomb.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/crystall/crystall_linehor.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/crystall/crystall_linevert.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/crystall/crystall_shine1.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/crystall/crystall_shine2.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/crystall/crystall_shine3.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/heart/heart.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/heart/heart_bomb.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/heart/heart_linehor.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/heart/heart_linevert.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/heart/heart_shine1.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/heart/heart_shine2.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/heart/heart_shine3.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/pyramid/pyramid.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/pyramid/pyramid_bomb.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/pyramid/pyramid_linehor.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/pyramid/pyramid_linevert.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/pyramid/pyramid_shine1.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/pyramid/pyramid_shine2.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/pyramid/pyramid_shine3.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/square/square.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/square/square_bomb.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/square/square_linehor.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/square/square_linevert.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/square/square_shine1.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/square/square_shine2.png</File>
+    <File>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/square/square_shine3.png</File>
+  </SourceFiles>
+  <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+  </DestFiles>
+</SourceFileCollection>
