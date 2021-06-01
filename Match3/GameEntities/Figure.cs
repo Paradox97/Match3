@@ -57,7 +57,18 @@ namespace Match3.GameEntities
         {
             this.position = position;
             this.bounds = bounds;
-            FigureCreateOfType(type);
+            this.figureType = type;
+        }
+
+        public Figure(Vector2 position, Vector2[] bounds, int type, Texture2D[] textureSet, Texture2D[] animationSet, Texture2D[] effectsSet)
+        {
+            this.position = position;
+            this.bounds = bounds;
+            this.figureType = type;
+            this.textureset = textureSet;
+            this.animationset = animationSet;
+            this.effectsset = effectsSet;
+            this.texture = textureset[0];
         }
 
         public void FigureGetTexture(Texture2D[] textureSet, Texture2D[] animationSet, Texture2D[] effectsSet)
@@ -69,6 +80,18 @@ namespace Match3.GameEntities
 
             //this.sprite = new Sprite(textureSet, animationSet, effectsSet, position);
         }
+
+        public void Next()
+        {
+            state += 1;
+            this.texture = animationset[(state/stateByTime) % MAX_STATES];
+        }
+
+       /* public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
+       */
 
         public void FigureCreate()
         {

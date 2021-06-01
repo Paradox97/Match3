@@ -249,6 +249,7 @@ namespace Match3
 
             this.field = new Field(figureTextures, figureAnimationTextures, effectsTextures, fieldTextures, fieldBounds, fieldOffset);
             //field.Draw();
+            //field.Draw();
         }
 
         protected override void Update(GameTime gameTime)
@@ -260,7 +261,8 @@ namespace Match3
                 Exit();
             }
 
-            field.Select();
+            field.FieldInput();
+            //field.Draw();
 
             // TODO: Add your update logic here
 
@@ -272,9 +274,13 @@ namespace Match3
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+
+            //field.Draw();
+            field.Draw();
+
             _spriteBatch.Begin();
 
-            field.Draw(_spriteBatch);
+            field.FieldDraw(_spriteBatch);
 
             _spriteBatch.End();
 

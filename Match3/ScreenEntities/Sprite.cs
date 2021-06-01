@@ -10,45 +10,27 @@ namespace Match3.ScreenEntities
 {
     class Sprite
     {
-        public Texture2D[]
-            textureset,
-            animationset,
-            effectsset;
-
         public Texture2D
             texture;
 
-        public Vector2 position;
+        public Vector2 position,
+            origin;
 
         public Color color;
-
-        public int
-            state, stateByTime = 15;
-
-        const int MAX_STATES = 3;
-        public Sprite(Texture2D[] textureSet, Texture2D[] animationSet, Texture2D[] effectsSet, Vector2 position)
-        {
-            
-        }
 
         public Sprite(Texture2D texture, Vector2 position) //plain Sprite
         {
             this.texture = texture;
             this.position = position;
+            this.origin = new Vector2(texture.Width / 2, texture.Height / 2);
             this.color = Color.CornflowerBlue;
         }
 
-        public void SpriteGetTextures(Texture2D[] textureSet, Texture2D[] animationSet, Texture2D[] effectsSet, Vector2 position) //game object sprite
-        {
-            this.textureset = textureSet;
-
-            this.texture = textureset[0];
-        }
-
-        public void SpriteGetTextures(Texture2D texture, Vector2 position)          //plain Sprite
+        public void SpriteGetTextures(Texture2D texture, Vector2 position) 
         {
             this.texture = texture;
             this.position = position;
+            this.origin = new Vector2(texture.Width / 2, texture.Height / 2);
             this.color = Color.CornflowerBlue;
         }
 

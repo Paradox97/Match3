@@ -29,6 +29,15 @@ namespace Match3.GameEntities
             LINE_BONUS = 4,
             BOMB_BONUS = 5;
 
+        public enum FigureTypes
+        {
+            Circle = 0,
+            Crystall = 1,
+            Heart = 2,
+            Pyramid = 3,
+            Square = 4,
+        }
+
         //field boundaries
         public Vector2[] bounds; //topleft, topright, bottomleft, bottomright
         public int
@@ -56,8 +65,6 @@ namespace Match3.GameEntities
 
         public Texture2D self;          //field texture
 
-        public int i1, j1, i2, j2;
-
         public Field(Texture2D[][] textureSet, Texture2D[][] animationSet, Texture2D[] effectsSet, Texture2D[] fieldTextures, Vector2[] bounds, float offset)
         {
             this.textureset = textureSet;
@@ -80,7 +87,7 @@ namespace Match3.GameEntities
                 );
 
             this.field = new Figure[FIELD_SIZE_HOR, FIELD_SIZE_VERT];
-            Field_Create();
+            FieldCreate();
             //locate(new Vector2(65, 180));
         }
 
@@ -90,7 +97,15 @@ namespace Match3.GameEntities
 
         }
 
-        public void Field_Create()
+        public int FieldCreateFigureRand()
+        {
+            FigureTypes[] figures = ((FigureTypes[])Enum.GetValues(typeof(FigureTypes)));
+            int figureType = (int)figures[new Random().Next(0, figures.Length)];
+
+            return figureType;
+        }
+
+        public void FieldCreate()
         {
             for (int i = 0; i < 8; i++)
             {
@@ -111,16 +126,15 @@ namespace Match3.GameEntities
                         new Vector2(figurePos.X + figure_size, figurePos.Y + figure_size)
                     };
 
-                    Figure figure = new Figure(figurePos, figureBounds);
-                    //Console.WriteLine(figureBounds[0].ToString() + figureBounds[1].ToString() + figureBounds[2].ToString() + figureBounds[3].ToString());
-                    int type = figure.figureType;
-                    figure.FigureGetTexture(textureset[type], animationset[type], effectsset);
+                    int type = FieldCreateFigureRand();
+
+                    Figure figure = new Figure(figurePos, figureBounds, type, textureset[type], animationset[type], effectsset);
                     this.field[j, i] = figure;
                 }
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void FieldDraw(SpriteBatch spriteBatch)
         {
             //spriteBatch.Begin();
 
@@ -130,17 +144,15 @@ namespace Match3.GameEntities
             {
                 for (int j = 0; j < FIELD_SIZE_VERT; j++)
                 {
+                    //field[i, j].Next();
                     spriteBatch.Draw(field[i, j].texture, field[i, j].position, Color.White);
                 }
             }
 
-            //Console.WriteLine("Values2" + field[i1, j1].figureType.ToString() + field[j1, j2].figureType.ToString());
-           
-
             //spriteBatch.End();
         }
 
-        public int[] locate(Vector2 position)       //field position by cursor position
+        public int[] FieldLocate(Vector2 position)       //field position by cursor position
         {
             //in bounds
             if (
@@ -176,18 +188,17 @@ namespace Match3.GameEntities
             }
         }
 
+        /*
         public Vector2 locate(int[] fieldPosition)  //on screen bounaries by field position
         {
-
-
-
             return new Vector2();
             //return new Vector2[4] { };
         }
+        */
 
-        public void Select()
+        public void FieldInput()
         {
-            this.previousMouseState = this.currentMouseState;          
+            this.previousMouseState = this.currentMouseState;
             Input input = Input.getMouseInput();
             this.currentMouseState = input.mouseInput;
 
@@ -198,16 +209,17 @@ namespace Match3.GameEntities
                 )
             {
                 this.previousFigure = currentFigure;
-                this.currentFigure = locate(new Vector2(currentMouseState.X, currentMouseState.Y));
+
+                this.currentFigure = FieldLocate(new Vector2(currentMouseState.X, currentMouseState.Y));
                 
                 if (previousFigure != null)
                 {
                     Console.WriteLine("CURR" + currentFigure[0].ToString() + currentFigure[1].ToString());
                     Console.WriteLine("PREV" + previousFigure[0].ToString() + previousFigure[1].ToString());
                     
-                    Swap(currentFigure[0], currentFigure[1], previousFigure[0], previousFigure[1]);
+                    FieldSwap(currentFigure[0], currentFigure[1], previousFigure[0], previousFigure[1]);
 
-                    Console.WriteLine("VALUES" + this.field[currentFigure[0], currentFigure[1]].figureType.ToString() +  this.field[previousFigure[0], previousFigure[1]].figureType.ToString());
+                    //Console.WriteLine("VALUES" + this.field[currentFigure[0], currentFigure[1]].figureType.ToString() +  this.field[previousFigure[0], previousFigure[1]].figureType.ToString());
 
                     if ((currentFigure[0] == previousFigure[0])&&(currentFigure[1] == previousFigure[1]))
                     {
@@ -221,28 +233,136 @@ namespace Match3.GameEntities
             }
 
         }
-
-        public void Swap(int i1, int j1, int i2, int j2)
+        public void GenerateByDifficulty(int difficultySeed)
         {
-            this.i1 = i1;
-            this.i2 = i2;
-            this.j1 = j1;
-            this.j2 = j2;
+            Random random = new Random();
+
+            int steps, seed;
+            int i, j;   //indices of field
+
+            //const int min = 5, max = 7;
+
+            switch (difficultySeed)
+            {
+                case 1:
+                    steps = random.Next(5, 7);
+
+                    for (int k = 0; k < steps; k++)
+                    {
+                        i = random.Next(0, FIELD_SIZE_HOR - 1);
+                        j = random.Next(0, FIELD_SIZE_VERT - 1);
+                        seed = random.Next(0, 3);
+                        FieldGenerate(i, j, seed);
+                    }
+                    break;
+                case 2:
+                    steps = random.Next(3, 5);
+
+                    for (int k = 0; k < steps; k++)
+                    {
+                        i = random.Next(0, FIELD_SIZE_HOR - 1);
+                        j = random.Next(0, FIELD_SIZE_VERT - 1);
+                        seed = random.Next(0, 3);
+                        FieldGenerate(i, j, seed);
+                    }
+
+                    break;
+                case 3:
+                    steps = random.Next(2, 4);
+
+                    for (int k = 0; k < steps; k++)
+                    {
+                        i = random.Next(0, FIELD_SIZE_HOR - 1);
+                        j = random.Next(0, FIELD_SIZE_VERT - 1);
+                        seed = random.Next(0, 3);
+                        FieldGenerate(i, j, seed);
+                    }
+
+                    break;
+            }
+        }
+
+        public void FieldGenerate(int i, int j, int seed)
+        {
+            int type = this.field[i, j].figureType;
+
+            switch (seed)
+            {
+                case 0:
+                    if (i + 2 < FIELD_SIZE_HOR)
+                    {
+                        this.field[i + 1, j].figureType = type;
+                        this.field[i + 2, j].figureType = type;
+                        return;
+                    }
+
+                    if ((i - 1 > 0) && (i + 1 < FIELD_SIZE_HOR))
+                    {
+                        this.field[i + 1, j].figureType = type;
+                        this.field[i - 1, j].figureType = type;
+                        return;
+                    }
+
+                    break;
+
+                case 1:
+                    if (i - 2 > 0)
+                    {
+                        this.field[i - 1, j].figureType = type;
+                        this.field[i - 2, j].figureType = type;
+                        return;
+                    }
+
+                    break;
+
+                case 2:
+                    if (j + 2 < FIELD_SIZE_HOR)
+                    {
+                        this.field[i, j + 1].figureType = type;
+                        this.field[i, j + 2].figureType = type;
+                        return;
+                    }
+
+                    if ((j - 1 > 0) && (j + 1 < FIELD_SIZE_HOR))
+                    {
+                        this.field[i, j + 1].figureType = type;
+                        this.field[i, j - 1].figureType = type;
+                        return;
+                    }
+
+                    break;
+
+                case 3:
+                    if (j - 2 > 0)
+                    {
+                        this.field[i, j - 1].figureType = type;
+                        this.field[i, j - 2].figureType = type;
+                        return;
+                    }
+
+                    break;
+            }
+        }
+        
 
 
-            Figure temp = new Figure(this.field[i1,j1].position, this.field[i1,j1].bounds, this.field[i1, j1].figureType);
-            temp.FigureGetTexture(this.field[i1, j1].textureset, this.field[i1, j1].animationset, this.field[i1, j1].effectsset);
+        public void FieldSwap(int i1, int j1, int i2, int j2)
+        {
+            if ((i1 == -1) || (i2 == -1))
+                return;
 
-            Figure temp2 = new Figure(this.field[i2, j2].position, this.field[i2, j2].bounds, this.field[i2, j2].figureType);
-            temp2.FigureGetTexture(this.field[i2, j2].textureset, this.field[i2, j2].animationset, this.field[i2, j2].effectsset);
-            this.field[i1, j1] = temp2;
+            Texture2D tempTex = this.field[i1, j1].texture;
+            int type = this.field[i1, j1].figureType;
 
+            this.field[i1, j1].texture = this.field[i2, j2].texture;
+            this.field[i1, j1].figureType = this.field[i2, j2].figureType;
 
-            this.field[i2, j2] = temp;
+            this.field[i2, j2].texture = tempTex;
+            this.field[i2, j2].figureType = type;
         }
 
 
-        public void Update()
+        public void FieldUpdate()
         {
 
 
@@ -255,11 +375,11 @@ namespace Match3.GameEntities
 
             string output = string.Empty;
 
-            for (int i = 0; i < FIELD_SIZE; i++)
+            for (int i = 0; i < FIELD_SIZE_HOR; i++)
             {
-                for (int j = 0; FIELD_SIZE < 8; j++)
+                for (int j = 0; j < FIELD_SIZE_VERT; j++)
                 {
-                    output += this.field[i, j].figureType;
+                    output += this.field[j, i].figureType;
                 }
                 output += "|\n";
             }
