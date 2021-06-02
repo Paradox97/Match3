@@ -1,19 +1,21 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Content;
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 using Match3.GameEntities;
 using Match3.ScreenEntities;
 using Match3.Controls;
+using Match3.States;
 
 namespace Match3
 {
     public class MatchGame : Game
     {
-        private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
 
         public Texture2D[][]
             textTextures,
@@ -26,25 +28,15 @@ namespace Match3
             fieldTextures;
 
         Field field;
-        Text[] text;
-        Button[] buttons;
 
-
-
-        public enum GameStates
-        {
-            mainMenu,
-            gameState,
-            gameOverState,
-            highScoresState,
-            quitState
-        }
+        private Screen currentScreen,
+            nextScreen;
 
         private int score;
 
         public MatchGame()
         {
-            _graphics = new GraphicsDeviceManager(this);  //to be moved to Screen
+            graphics = new GraphicsDeviceManager(this);  //to be moved to Screen
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
@@ -53,15 +45,18 @@ namespace Match3
         {
             // TODO: Add your initialization logic here
 
-            _graphics.PreferredBackBufferWidth = 455;  // set this value to the desired width of your window
-            _graphics.PreferredBackBufferHeight = 625;   // set this value to the desired height of your window
+            IsMouseVisible = true;
+            graphics.PreferredBackBufferWidth = 455;  // set this value to the desired width of your window
+            graphics.PreferredBackBufferHeight = 625;   // set this value to the desired height of your window
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
-            _graphics.ApplyChanges();
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            graphics.ApplyChanges();
+            spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            currentScreen = new MainMenuScreen(this, graphics.GraphicsDevice, Content);
 
             #region text textures
            
@@ -96,8 +91,6 @@ namespace Match3
 
             #endregion
 
-            this.text = new Text[5];
-
             #region button textures
 
             this.buttonTextures = new Texture2D[5][];  //button textures
@@ -127,8 +120,6 @@ namespace Match3
                 Content.Load<Texture2D>("buttons/No")
             };
             #endregion
-
-            this.buttons = new Button[5];
 
             #region figure textures
 
@@ -254,6 +245,12 @@ namespace Match3
 
         protected override void Update(GameTime gameTime)
         {
+            if(nextScreen != null)
+            {
+                currentScreen = nextScreen;
+                nextScreen = null;
+            }
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
             //end game    
@@ -261,7 +258,7 @@ namespace Match3
                 Exit();
             }
 
-            field.FieldInput();
+            //field.FieldInput();
             //field.Draw();
 
             // TODO: Add your update logic here
@@ -276,13 +273,14 @@ namespace Match3
             // TODO: Add your drawing code here
 
             //field.Draw();
-            field.Draw();
+            //field.Draw();
 
-            _spriteBatch.Begin();
+            currentScreen.Draw(gameTime, spriteBatch);
+            //spriteBatch.Begin();
 
-            field.FieldDraw(_spriteBatch);
+            //field.FieldDraw(spriteBatch);
 
-            _spriteBatch.End();
+            //spriteBatch.End();
 
             base.Draw(gameTime);
         }

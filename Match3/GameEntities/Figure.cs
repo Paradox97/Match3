@@ -9,7 +9,7 @@ using Match3.ScreenEntities;
 
 namespace Match3.GameEntities
 {
-    class Figure
+    class Figure:ICloneable
     {
         public enum FigureType
         {
@@ -166,6 +166,11 @@ namespace Match3.GameEntities
             state = 0;
 
             return 0;
+        }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
         }
 
         public void FigureCreateOfType(int type)

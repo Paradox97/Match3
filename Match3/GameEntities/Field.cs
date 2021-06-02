@@ -128,10 +128,16 @@ namespace Match3.GameEntities
 
                     int type = FieldCreateFigureRand();
 
-                    Figure figure = new Figure(figurePos, figureBounds, type, textureset[type], animationset[type], effectsset);
+                    Figure figure = new Figure(figurePos, figureBounds, type, textureset[type], animationset[type], effectsset);        // type, textureset[type], animationset[type], effectsset delta between all figures
                     this.field[j, i] = figure;
                 }
             }
+
+
+
+
+
+
         }
 
         public void FieldDraw(SpriteBatch spriteBatch)
