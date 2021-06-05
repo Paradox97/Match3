@@ -205,7 +205,7 @@ namespace Match3.GameEntities
         public void FieldInput()
         {
             this.previousMouseState = this.currentMouseState;
-            Input input = Input.getMouseInput();
+            Input input = Input.GetInput();
             this.currentMouseState = input.mouseInput;
 
             if (

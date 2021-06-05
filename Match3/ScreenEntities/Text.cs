@@ -11,8 +11,11 @@ namespace Match3.ScreenEntities
 {
     public class Text : ScreenContent
     {
-        public Text(Texture2D texture) : base(texture)
+        public Text(Texture2D texture, Vector2 position) : base(texture, position)
         {
+            this.Scale = 0.9f;
+            this.rotation = 0f;
+            this.origin = new Vector2(0,0);
         }
     }
 }

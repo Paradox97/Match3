@@ -15,21 +15,46 @@ namespace Match3.States
     {
         public GameScreen(MatchGame game, GraphicsDevice graphicsDevice, ContentManager content) : base(game, graphicsDevice, content)
         {
+            Texture2D match3 = content.Load<Texture2D>("text/Match_3");
+            Text match3Text = new Text(match3, new Vector2(0, 20));
+
+            Texture2D classic = content.Load<Texture2D>("text/Classic");
+            Text classicText = new Text(classic, new Vector2(300, 80));
+
+            this.screenContent = new List<ScreenContent>() { match3Text, classicText };
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            throw new NotImplementedException();
+            spriteBatch.Begin();
+
+            graphicsDevice.Clear(Color.CornflowerBlue);
+
+            foreach (var content in screenContent)
+                
+                content.Draw(gameTime, spriteBatch);
+
+            spriteBatch.End();
+            //throw new NotImplementedException();
         }
 
         public override void PostUpdate(GameTime gameTime)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         public override void Update(GameTime gameTime)
         {
-            throw new NotImplementedException();
+            foreach (ScreenContent content in screenContent)
+            {
+                content.Update();
+            }
+
+            Input input = Input.GetInput();
+            KeyboardState keyboard = input.keyboardState;
+            if (keyboard.IsKeyDown(Keys.Escape))
+                game.ChangeScreen(new MainMenuScreen(game, graphicsDevice, content));
+            //throw new NotImplementedException();
         }
     }
 }

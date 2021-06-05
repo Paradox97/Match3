@@ -15,29 +15,37 @@ namespace Match3.States
     {
         public MainMenuScreen(MatchGame game, GraphicsDevice graphicsDevice, ContentManager content) : base(game, graphicsDevice, content)
         {
-            Texture2D play = content.Load<Texture2D>("buttons/Play");
-            Button playButton = new Button(play);
-            playButton.Position(new Vector2(0, 0));
+            Texture2D match3 = content.Load<Texture2D>("text/Match_3");
+            Text match3Text = new Text(match3, new Vector2(0, 20));
 
+            Texture2D classic = content.Load<Texture2D>("text/Classic");
+            Text classicText = new Text(classic, new Vector2(300, 80));
+
+            Texture2D play = content.Load<Texture2D>("buttons/Play");
+            Button playButton = new Button(play, new Vector2(50, 180));
+            playButton.click += Play;
 
             Texture2D highScores = content.Load<Texture2D>("buttons/High_scores");
-            Button highScoresButton = new Button(highScores);
-            highScoresButton.Position(new Vector2(0, 100));
-
+            Button highScoresButton = new Button(highScores, new Vector2(50, 320));
+            highScoresButton.click += HighScores;
 
             Texture2D quit = content.Load<Texture2D>("buttons/Quit");
-            Button quitButton = new Button(quit);
-            quitButton.Position(new Vector2(0, 200));
+            Button quitButton = new Button(quit, new Vector2(50, 460));
+            quitButton.click += Quit;
 
-            this.screenContent = new List<ScreenContent>() { playButton, highScoresButton, quitButton };//, highScoresButton, quitButton };
+            this.screenContent = new List<ScreenContent>() { match3Text, classicText, playButton,
+                highScoresButton, quitButton };
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
-            foreach(ScreenContent component in screenContent)
+
+            graphicsDevice.Clear(Color.CornflowerBlue);
+
+            foreach (ScreenContent content in screenContent)
             {
-                component.Draw(gameTime, spriteBatch);
+                content.Draw(gameTime, spriteBatch);
             }
             spriteBatch.End();
         }
@@ -47,9 +55,27 @@ namespace Match3.States
             throw new NotImplementedException();
         }
 
+        public void Play(object button, EventArgs args)
+        {
+            game.ChangeScreen(new GameScreen(game, graphicsDevice, content));
+        }
+
+        public void HighScores(object button, EventArgs args)
+        {
+            Console.WriteLine("HighScores not implemented yet");
+        }
+
+        public void Quit(object button, EventArgs args)
+        {
+            game.Exit();
+        }
+
         public override void Update(GameTime gameTime)
         {
-            throw new NotImplementedException();
+            foreach (ScreenContent content in screenContent)
+            {
+                content.Update();
+            }
         }
     }
 }

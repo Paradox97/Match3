@@ -34,6 +34,11 @@ namespace Match3
 
         private int score;
 
+        public void ChangeScreen(Screen screen)
+        {
+            nextScreen = screen;
+        }
+
         public MatchGame()
         {
             graphics = new GraphicsDeviceManager(this);  //to be moved to Screen
@@ -251,12 +256,14 @@ namespace Match3
                 nextScreen = null;
             }
 
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-            {
+           // if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+          //  {
             //end game    
                 
-                Exit();
-            }
+             //   Exit();
+           // }
+
+            currentScreen.Update(gameTime);
 
             //field.FieldInput();
             //field.Draw();
@@ -268,7 +275,6 @@ namespace Match3
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
 
