@@ -43,17 +43,23 @@ namespace Match3.States
             //throw new NotImplementedException();
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime, MouseState current, MouseState previous)
         {
             foreach (ScreenContent content in screenContent)
             {
-                content.Update();
+                content.Update(current, previous);
             }
 
-            Input input = Input.GetInput();
-            KeyboardState keyboard = input.keyboardState;
+            KeyboardState keyboard = Input.GetInput().keyboardState;
+
             if (keyboard.IsKeyDown(Keys.Escape))
                 game.ChangeScreen(new MainMenuScreen(game, graphicsDevice, content));
+
+            keyboard = Input.GetInput().keyboardState;
+
+            if (keyboard.IsKeyDown(Keys.Escape))
+                game.ChangeScreen(new MainMenuScreen(game, graphicsDevice, content));
+
             //throw new NotImplementedException();
         }
     }

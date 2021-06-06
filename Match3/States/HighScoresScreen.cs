@@ -26,7 +26,7 @@ namespace Match3.States
             throw new NotImplementedException();
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime, MouseState current, MouseState previous)
         {
             throw new NotImplementedException();
         }

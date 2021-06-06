@@ -7,16 +7,17 @@ using System.Collections.Generic;
 
 namespace Match3.Controls
 {
-    class Input
+    public class Input
     {
         private static Input input;
 
-        public MouseState mouseInput;
+        public MouseState mouseState;
         public KeyboardState keyboardState;
+
         private Input()
         {
-            this.keyboardState = Keyboard.GetState();
-            this.mouseInput = Mouse.GetState();
+           keyboardState = Keyboard.GetState();
+           mouseState = Mouse.GetState();
         }
 
         public static Input GetInput()

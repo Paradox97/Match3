@@ -35,7 +35,7 @@ namespace Match3.States
 
 
 
-            this.screenContent = new List<ScreenContent>() { match3Text, classicText, playButton,
+            this.screenContent = new List<ScreenContent>() { match3Text, classicText, playButton, 
                 highScoresButton, quitButton };
         }
 
@@ -72,13 +72,11 @@ namespace Match3.States
             game.ChangeScreen(new QuitScreen(game, graphicsDevice, content));
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime, MouseState current, MouseState previous)
         {
-            
-
             foreach (ScreenContent content in screenContent)
             {
-                content.Update();
+                content.Update(current, previous);
             }
         }
     }

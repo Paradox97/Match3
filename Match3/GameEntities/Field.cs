@@ -206,7 +206,7 @@ namespace Match3.GameEntities
         {
             this.previousMouseState = this.currentMouseState;
             Input input = Input.GetInput();
-            this.currentMouseState = input.mouseInput;
+            this.currentMouseState = input.mouseState;
 
             if (
                 (this.currentMouseState.LeftButton == ButtonState.Pressed)

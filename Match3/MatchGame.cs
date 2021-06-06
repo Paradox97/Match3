@@ -32,6 +32,10 @@ namespace Match3
         private Screen currentScreen,
             nextScreen;
 
+        private MouseState currentMouseState,
+            previousMouseState;
+
+
         private int score;
 
         public void ChangeScreen(Screen screen)
@@ -256,14 +260,19 @@ namespace Match3
                 nextScreen = null;
             }
 
-           // if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-          //  {
+            // if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            //  {
             //end game    
-                
-             //   Exit();
-           // }
 
-            currentScreen.Update(gameTime);
+            //   Exit();
+            // }
+            previousMouseState = currentMouseState;
+
+            Input input = Input.GetInput();
+
+            currentMouseState = input.mouseState;
+
+            currentScreen.Update(gameTime, currentMouseState, previousMouseState);
 
             //field.FieldInput();
             //field.Draw();

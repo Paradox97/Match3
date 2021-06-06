@@ -32,13 +32,6 @@ namespace Match3.ScreenEntities
             this.color = Color.White;
             
             this.position = position;
-
-            this.bounds = new Vector2[4];
-            
-            this.bounds[0] = position;
-            this.bounds[1] = new Vector2(position.X + texture.Width, position.Y);
-            this.bounds[2] = new Vector2(position.X, position.Y + texture.Height);
-            this.bounds[3] = new Vector2(position.X + texture.Width, position.Y + texture.Height);
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -51,7 +44,7 @@ namespace Match3.ScreenEntities
         {
 
         }
-        public virtual void Update()
+        public virtual void Update(MouseState current, MouseState previous)
         {
          
         }

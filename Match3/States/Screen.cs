@@ -30,7 +30,7 @@ namespace Match3.States
             this.content = content;
         }
 
-        public abstract void Update(GameTime gameTime);
+        public abstract void Update(GameTime gameTime, MouseState current, MouseState previous);
 
         public abstract void PostUpdate(GameTime gameTime);
 

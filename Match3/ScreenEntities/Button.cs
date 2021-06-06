@@ -21,17 +21,21 @@ namespace Match3.ScreenEntities
             this.Scale = 0.7f;
             this.rotation = 0f;
             this.origin = new Vector2(0, 0);
+
+
+            this.bounds = new Vector2[4];
+
+            this.bounds[0] = position;
+            this.bounds[1] = new Vector2(position.X + texture.Width*Scale, position.Y);
+            this.bounds[2] = new Vector2(position.X, position.Y + texture.Height*Scale);
+            this.bounds[3] = new Vector2(position.X + texture.Width*Scale, position.Y + texture.Height*Scale);
         }
 
-        public override void Update()
+        public override void Update(MouseState current, MouseState previous)
         {
-            Input old = Input.GetOldInput();
-            
-            previousMouseState = old.mouseInput;
+            previousMouseState = previous;
 
-            Input input = Input.GetInput();
-
-            currentMouseState = input.mouseInput;
+            currentMouseState = current;
 
             //Console.WriteLine(new Vector2(mouseState.X, mouseState.Y));
 
