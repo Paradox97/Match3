@@ -230,6 +230,8 @@ namespace Match3.States
                 
                 content.Draw(gameTime, spriteBatch);
 
+            field.FieldDraw(spriteBatch);
+
             spriteBatch.End();
         }
 
@@ -244,6 +246,8 @@ namespace Match3.States
             {
                 content.Update(current, previous);
             }
+
+            field.Update(current, previous);
 
             KeyboardState keyboard = Input.GetInput().keyboardState;
 

@@ -13,8 +13,9 @@ using System.Threading;
 using System.Collections;
 using System.IO;
 using Match3.Controls;
+using Match3.GameEntities;
 
-namespace Match3.GameEntities
+namespace Match3.ScreenEntities
 {
     class Field
     {
@@ -202,21 +203,18 @@ namespace Match3.GameEntities
         }
         */
 
-        public void FieldInput()
+        public void FieldInput(MouseState current, MouseState previous)
         {
-            this.previousMouseState = this.currentMouseState;
-            Input input = Input.GetInput();
-            this.currentMouseState = input.mouseState;
 
             if (
-                (this.currentMouseState.LeftButton == ButtonState.Pressed)
+                (current.LeftButton == ButtonState.Pressed)
                 &&
-                (this.previousMouseState.LeftButton == ButtonState.Released)
+                (previous.LeftButton == ButtonState.Released)
                 )
             {
-                this.previousFigure = currentFigure;
+                previousFigure = currentFigure;
 
-                this.currentFigure = FieldLocate(new Vector2(currentMouseState.X, currentMouseState.Y));
+                currentFigure = FieldLocate(new Vector2(current.X, current.Y));
                 
                 if (previousFigure != null)
                 {
@@ -225,16 +223,14 @@ namespace Match3.GameEntities
                     
                     FieldSwap(currentFigure[0], currentFigure[1], previousFigure[0], previousFigure[1]);
 
-                    //Console.WriteLine("VALUES" + this.field[currentFigure[0], currentFigure[1]].figureType.ToString() +  this.field[previousFigure[0], previousFigure[1]].figureType.ToString());
-
                     if ((currentFigure[0] == previousFigure[0])&&(currentFigure[1] == previousFigure[1]))
                     {
                         Console.WriteLine("No Swap");
                     }
                     Console.WriteLine("Swap");
              
-                    this.previousFigure = null;
-                    this.currentFigure = null;
+                    previousFigure = null;
+                    currentFigure = null;
                 }
             }
 
@@ -368,11 +364,9 @@ namespace Match3.GameEntities
         }
 
 
-        public void FieldUpdate()
+        public void Update(MouseState current, MouseState previous)
         {
-
-
-
+            FieldInput(current, previous);
         }
 
         public void Draw()      //debug
