@@ -240,7 +240,7 @@ namespace Match3.States
 
         }
 
-        public override void Update(GameTime gameTime, MouseState current, MouseState previous)
+        public override void Update(GameTime gameTime, MouseState current, MouseState previous, KeyboardState currentKeyboard, KeyboardState previousKeyboard)
         {
             foreach (ScreenContent content in screenContent)
             {
@@ -249,15 +249,9 @@ namespace Match3.States
 
             field.Update(current, previous);
 
-            KeyboardState keyboard = Input.GetInput().keyboardState;
-
-            if (keyboard.IsKeyDown(Keys.Escape))
+            if (currentKeyboard.IsKeyDown(Keys.Escape))
                 game.ChangeScreen(new MainMenuScreen(game, graphics, content));
 
-            keyboard = Input.GetInput().keyboardState;
-
-            if (keyboard.IsKeyDown(Keys.Escape))
-                game.ChangeScreen(new MainMenuScreen(game, graphics, content));
         }
     }
 }

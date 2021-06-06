@@ -64,12 +64,15 @@ namespace Match3.States
             throw new NotImplementedException();
         }
 
-        public override void Update(GameTime gameTime, MouseState current, MouseState previous)
+        public override void Update(GameTime gameTime, MouseState current, MouseState previous, KeyboardState currentKeyboard, KeyboardState previousKeyboard)
         {
             foreach (ScreenContent content in screenContent)
             {
                 content.Update(current, previous);
             }
+
+            if (currentKeyboard.IsKeyDown(Keys.Escape))
+                game.ChangeScreen(new MainMenuScreen(game, graphics, content));
         }
     }
 }

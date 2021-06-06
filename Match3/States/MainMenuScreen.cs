@@ -72,7 +72,7 @@ namespace Match3.States
             game.ChangeScreen(new QuitScreen(game, graphics, content));
         }
 
-        public override void Update(GameTime gameTime, MouseState current, MouseState previous)
+        public override void Update(GameTime gameTime, MouseState current, MouseState previous, KeyboardState currentKeyboard, KeyboardState previousKeyboard)
         {
             foreach (ScreenContent content in screenContent)
             {

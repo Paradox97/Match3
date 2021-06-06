@@ -80,12 +80,14 @@ namespace Match3
             }
 
             previousMouseState = currentMouseState;
+            previousKeyboardState = currentKeyboardState;
 
             Input input = Input.GetInput();
 
             currentMouseState = input.mouseState;
+            currentKeyboardState = input.keyboardState;
 
-            currentScreen.Update(gameTime, currentMouseState, previousMouseState);
+            currentScreen.Update(gameTime, currentMouseState, previousMouseState, currentKeyboardState, previousKeyboardState);
 
             base.Update(gameTime);
         }
