@@ -134,7 +134,7 @@ namespace Match3.GameEntities
                 }
             }
 
-
+            GenerateByDifficulty(1);
 
 
 
@@ -286,22 +286,29 @@ namespace Match3.GameEntities
 
         public void FieldGenerate(int i, int j, int seed)
         {
-            int type = this.field[i, j].figureType;
+            int type = field[i, j].figureType;
 
             switch (seed)
             {
                 case 0:
                     if (i + 2 < FIELD_SIZE_HOR)
                     {
-                        this.field[i + 1, j].figureType = type;
-                        this.field[i + 2, j].figureType = type;
+                        field[i + 1, j].figureType = type;
+                        field[i + 1, j].texture = textureset[type][0];
+
+                        field[i + 2, j].figureType = type;
+                        field[i + 2, j].texture = textureset[type][0];
                         return;
                     }
 
                     if ((i - 1 > 0) && (i + 1 < FIELD_SIZE_HOR))
                     {
-                        this.field[i + 1, j].figureType = type;
-                        this.field[i - 1, j].figureType = type;
+                        field[i + 1, j].figureType = type;
+                        field[i + 1, j].texture = textureset[type][0];
+
+
+                        field[i - 1, j].figureType = type;
+                        field[i - 1, j].texture = textureset[type][0];
                         return;
                     }
 
@@ -310,8 +317,11 @@ namespace Match3.GameEntities
                 case 1:
                     if (i - 2 > 0)
                     {
-                        this.field[i - 1, j].figureType = type;
-                        this.field[i - 2, j].figureType = type;
+                        field[i - 1, j].figureType = type;
+                        field[i - 1, j].texture = textureset[type][0];
+
+                        field[i - 2, j].figureType = type;
+                        field[i - 2, j].texture = textureset[type][0];
                         return;
                     }
 
@@ -320,15 +330,21 @@ namespace Match3.GameEntities
                 case 2:
                     if (j + 2 < FIELD_SIZE_HOR)
                     {
-                        this.field[i, j + 1].figureType = type;
-                        this.field[i, j + 2].figureType = type;
+                        field[i, j + 1].figureType = type;
+                        field[i, j + 1].texture = textureset[type][0];
+
+                        field[i, j + 2].figureType = type;
+                        field[i, j + 2].texture = textureset[type][0];
                         return;
                     }
 
                     if ((j - 1 > 0) && (j + 1 < FIELD_SIZE_HOR))
                     {
-                        this.field[i, j + 1].figureType = type;
-                        this.field[i, j - 1].figureType = type;
+                        field[i, j + 1].figureType = type;
+                        field[i, j + 1].texture = textureset[type][0];
+
+                        field[i, j - 1].figureType = type;
+                        field[i, j - 1].texture = textureset[type][0];
                         return;
                     }
 
@@ -337,8 +353,11 @@ namespace Match3.GameEntities
                 case 3:
                     if (j - 2 > 0)
                     {
-                        this.field[i, j - 1].figureType = type;
-                        this.field[i, j - 2].figureType = type;
+                        field[i, j - 1].figureType = type;
+                        field[i, j - 1].texture = textureset[type][0];
+
+                        field[i, j - 2].figureType = type;
+                        field[i, j - 2].texture = textureset[type][0];
                         return;
                     }
 
