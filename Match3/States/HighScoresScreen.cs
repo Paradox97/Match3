@@ -12,7 +12,7 @@ namespace Match3.States
 {
     public class HighScoresScreen : Screen
     {
-        public HighScoresScreen(MatchGame game, GraphicsDevice graphicsDevice, ContentManager content) : base(game, graphicsDevice, content)
+        public HighScoresScreen(MatchGame game, GraphicsDeviceManager graphics, ContentManager content) : base(game, graphics, content)
         {
         }
 

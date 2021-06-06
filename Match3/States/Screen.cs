@@ -13,7 +13,9 @@ namespace Match3.States
 {
     public abstract class Screen
     {
-        protected GraphicsDevice graphicsDevice;
+        protected GraphicsDeviceManager graphics;
+
+        //protected GraphicsDevice graphicsDevice;
 
         protected MatchGame game;
 
@@ -21,11 +23,11 @@ namespace Match3.States
 
         protected List<ScreenContent> screenContent;
 
-        public Screen(MatchGame game, GraphicsDevice graphicsDevice, ContentManager content)
+        public Screen(MatchGame game, GraphicsDeviceManager graphics, ContentManager content)
         {
             this.game = game;
 
-            this.graphicsDevice = graphicsDevice;
+            this.graphics = graphics;
 
             this.content = content;
         }

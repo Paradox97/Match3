@@ -13,7 +13,7 @@ namespace Match3.States
 {
     public class MainMenuScreen : Screen
     {
-        public MainMenuScreen(MatchGame game, GraphicsDevice graphicsDevice, ContentManager content) : base(game, graphicsDevice, content)
+        public MainMenuScreen(MatchGame game, GraphicsDeviceManager graphics, ContentManager content) : base(game, graphics, content)
         {
             Texture2D match3 = content.Load<Texture2D>("text/Match_3");
             Text match3Text = new Text(match3, new Vector2(0, 20));
@@ -43,7 +43,7 @@ namespace Match3.States
         {
             spriteBatch.Begin();
 
-            graphicsDevice.Clear(Color.CornflowerBlue);
+            graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
 
             foreach (ScreenContent content in screenContent)
             {
@@ -59,7 +59,7 @@ namespace Match3.States
 
         public void Play(object button, EventArgs args)
         {
-            game.ChangeScreen(new GameScreen(game, graphicsDevice, content));
+            game.ChangeScreen(new GameScreen(game, graphics, content));
         }
 
         public void HighScores(object button, EventArgs args)
@@ -69,7 +69,7 @@ namespace Match3.States
 
         public void Quit(object button, EventArgs args)
         {
-            game.ChangeScreen(new QuitScreen(game, graphicsDevice, content));
+            game.ChangeScreen(new QuitScreen(game, graphics, content));
         }
 
         public override void Update(GameTime gameTime, MouseState current, MouseState previous)
