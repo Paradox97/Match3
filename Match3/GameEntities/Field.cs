@@ -15,7 +15,7 @@ using System.IO;
 using Match3.Controls;
 using Match3.GameEntities;
 
-namespace Match3.ScreenEntities
+namespace Match3.GameEntities
 {
     class Field
     {
