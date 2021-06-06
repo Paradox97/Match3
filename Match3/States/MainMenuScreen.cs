@@ -33,6 +33,8 @@ namespace Match3.States
             Button quitButton = new Button(quit, new Vector2(50, 460));
             quitButton.click += Quit;
 
+
+
             this.screenContent = new List<ScreenContent>() { match3Text, classicText, playButton,
                 highScoresButton, quitButton };
         }
@@ -67,11 +69,13 @@ namespace Match3.States
 
         public void Quit(object button, EventArgs args)
         {
-            game.Exit();
+            game.ChangeScreen(new QuitScreen(game, graphicsDevice, content));
         }
 
         public override void Update(GameTime gameTime)
         {
+            
+
             foreach (ScreenContent content in screenContent)
             {
                 content.Update();

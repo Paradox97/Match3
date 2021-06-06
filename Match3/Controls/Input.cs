@@ -13,7 +13,7 @@ namespace Match3.Controls
 
         public MouseState mouseInput;
         public KeyboardState keyboardState;
-        public Input()
+        private Input()
         {
             this.keyboardState = Keyboard.GetState();
             this.mouseInput = Mouse.GetState();
@@ -22,6 +22,14 @@ namespace Match3.Controls
         public static Input GetInput()
         {
             input = new Input();
+            return input;
+        }
+
+        public static Input GetOldInput()
+        {
+            if (input == null)
+                input = new Input();
+
             return input;
         }
     }

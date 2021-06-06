@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Match3": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}

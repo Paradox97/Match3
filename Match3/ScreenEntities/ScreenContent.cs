@@ -12,10 +12,6 @@ namespace Match3.ScreenEntities
 {
     public abstract class ScreenContent
     {
-
-        private MouseState currentMouseState,
-            previousMouseState;
-
         public Vector2 position, origin;
 
         public Vector2[] bounds;
@@ -55,22 +51,9 @@ namespace Match3.ScreenEntities
         {
 
         }
-        public void Update()
+        public virtual void Update()
         {
-            Input input = Input.GetInput();
-            MouseState mouseState = input.mouseInput;
-
-            //Console.WriteLine(new Vector2(mouseState.X, mouseState.Y));
-
-            if (mouseState.LeftButton == ButtonState.Pressed)
-            {
-                if (
-                    (mouseState.X >= bounds[0].X) && (mouseState.X <= bounds[1].X)
-                    &&
-                    (mouseState.Y >= bounds[0].Y) && (mouseState.Y <= bounds[3].Y)
-                    )
-                    click.Invoke(this, new EventArgs());
-            }
+         
         }
 
     }
