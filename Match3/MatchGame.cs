@@ -39,7 +39,7 @@ namespace Match3
             previousKeyboardState;
 
 
-        private int score;
+        public int score;
 
         public void ChangeScreen(Screen screen)
         {

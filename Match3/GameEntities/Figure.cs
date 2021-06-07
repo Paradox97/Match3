@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Content;
 using System.Diagnostics;
 using Match3.ScreenEntities;
 
@@ -11,14 +12,13 @@ namespace Match3.GameEntities
 {
     class Figure:ICloneable
     {
-        public enum FigureType
-        {
-            Circle = 0,
-            Crystall = 1,
-            Heart = 2,
-            Pyramid = 3,
-            Square = 4,
-        }
+        public ContentManager content;
+
+        public string[] texturePaths;
+
+        public string[] effectsPaths;
+
+        public string[] animationPaths;
 
         public Texture2D[]
             textureset,
@@ -29,7 +29,7 @@ namespace Match3.GameEntities
             texture;
 
         public Sprite sprite;
-
+        public string[] pathPrefixes;
 
         public Vector2[] bounds;
         public Vector2 position;
@@ -43,6 +43,7 @@ namespace Match3.GameEntities
             isSelected,
             isDragged,
             isBlownUp,
+            isFalling,
             isDestroyed;
 
         const int MAX_STATES = 3;
@@ -50,7 +51,6 @@ namespace Match3.GameEntities
         {
             this.position = position;
             this.bounds = bounds;
-            FigureCreate();
         }
 
         public Figure(Vector2 position, Vector2[] bounds, int type)
@@ -71,6 +71,32 @@ namespace Match3.GameEntities
             this.texture = textureset[0];
         }
 
+        public Figure(Vector2 position, Vector2[] bounds, int type, string[] prefixes, string[] texturePaths, string[] animationPaths, string[] effectsPaths, ContentManager content)
+        {
+            this.position = position;
+            this.bounds = bounds;
+            this.figureType = type;
+
+            this.content = content;
+
+            this.pathPrefixes = prefixes;
+            this.texturePaths = texturePaths;
+            this.animationPaths = animationPaths;
+            this.effectsPaths = effectsPaths;
+
+            this.sprite = new Sprite(pathPrefixes[0] + texturePaths[0], position, content);
+            this.texture = sprite.texture;
+        }
+
+        public void ChangeType(string[] texturePaths, string[] animationPaths)
+        {
+            this.texturePaths = texturePaths;
+            this.animationPaths = animationPaths;
+
+            this.sprite = new Sprite(pathPrefixes[0] + texturePaths[0], position, content);
+        }
+
+
         public void FigureGetTexture(Texture2D[] textureSet, Texture2D[] animationSet, Texture2D[] effectsSet)
         {
             this.textureset = textureSet;
@@ -87,20 +113,6 @@ namespace Match3.GameEntities
             this.texture = animationset[(state/stateByTime) % MAX_STATES];
         }
 
-       /* public object Clone()
-        {
-            return this.MemberwiseClone();
-        }
-       */
-
-        public void FigureCreate()
-        {
-            FigureType[] figures = ((FigureType[])Enum.GetValues(typeof(FigureType)));
-            this.figureType = (int)figures[new Random().Next(0, figures.Length)];
-            // return (int)figureType;
-        }
-
-        //events
         public void FigureSelect()
         {
             this.isSelected = true;
@@ -181,6 +193,7 @@ namespace Match3.GameEntities
         
         public void FigureCreateNotOfType(int type)             
         {
+            /*
             FigureType[] figures = ((FigureType[])Enum.GetValues(typeof(FigureType)));
 
             List<FigureType> figuresSubSet = new List<FigureType>();
@@ -192,6 +205,7 @@ namespace Match3.GameEntities
             }
 
             this.figureType = (int)figuresSubSet[new Random().Next(1, figuresSubSet.Count - 1)];
+            */
         }
        
 

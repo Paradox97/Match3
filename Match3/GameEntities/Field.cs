@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Content;
 using System.Diagnostics;
 
 
@@ -14,6 +15,7 @@ using System.Collections;
 using System.IO;
 using Match3.Controls;
 using Match3.GameEntities;
+using Match3.ScreenEntities;
 
 namespace Match3.GameEntities
 {
@@ -21,8 +23,8 @@ namespace Match3.GameEntities
     {
         public const int
             //Field consts
-            FIELD_SIZE_HOR = 8,
-            FIELD_SIZE_VERT = 8,
+            FIELD_SIZE_HORIZONTAL = 8,
+            FIELD_SIZE_VERTICAL = 8,
             FIELD_SIZE = 64,
 
             //Match bonus calculations
@@ -39,24 +41,37 @@ namespace Match3.GameEntities
             Square = 4,
         }
 
+        ContentManager content;
+
+        public enum FieldTypes
+        {
+            field_1 = 0
+        };
+
+        string 
+            path;
+
+        string[] figurePrefixes;
+        string prefix;
+
         //field boundaries
         public Vector2[] bounds; //topleft, topright, bottomleft, bottomright
-        public int
-            width, height;
 
-        public float offset, figure_size;
+        public float 
+            figureOffset, figureSize;
 
         public int score { get; set; }
 
-        public MouseState 
-            currentMouseState,
-            previousMouseState;
-
-        public int[]
-            currentFigure,
-            previousFigure;
+        public int[] 
+            currentFigure, previousFigure;
 
         public Figure[,] field;
+
+        public string[][]
+            figureTexturePaths,
+            figureAnimationPaths;
+
+        public string[] effectsPaths;
 
         public Texture2D[][] 
             textureset, //all the textures of game objects
@@ -64,19 +79,127 @@ namespace Match3.GameEntities
         
         public Texture2D[] effectsset;
 
-        public Texture2D self;          //field texture
+        //public Texture2D self;          //field texture
 
-        public Field(Texture2D[][] textureSet, Texture2D[][] animationSet, Texture2D[] effectsSet, Texture2D[] fieldTextures, Vector2[] bounds, float offset)
+        public Sprite self;
+
+        public Field(Texture2D[][] textureSet, Texture2D[][] animationSet, Texture2D[] effectsSet, float figureSize, float offset, Vector2[] bounds, ContentManager content, string[] pathPrefixes)
         {
-            this.textureset = textureSet;
-            this.animationset = animationSet;
-            this.effectsset = effectsSet;
-            this.self = fieldTextures[0];
-            this.offset = offset;
-            this.figure_size = textureset[0][0].Width;
+            textureset = textureSet;
+            animationset = animationSet;
+            effectsset = effectsSet;
+
+            this.content = content;
+            
+            prefix = pathPrefixes[0];
+            figurePrefixes = new string[2] { pathPrefixes[1], pathPrefixes[2]};
+
+
+            FieldTypes[] fields = ((FieldTypes[])Enum.GetValues(typeof(FieldTypes)));
+            path = fields[new Random().Next(0, fields.Length)].ToString();
+            self = new Sprite(prefix + path, bounds[0], content);
 
             this.bounds = bounds;
 
+            this.figureOffset = offset;
+            this.figureSize = figureSize;
+
+            #region figure textures
+            figureTexturePaths = new string[5][];
+
+            figureTexturePaths[0] = new string[4]
+            {
+                "circle/circle",
+                "circle/circle_linehor",
+                "circle/circle_linevert",
+                "circle/circle_bomb"
+            };
+
+            figureTexturePaths[1] = new string[4]
+            {
+                "crystall/crystall",
+                "crystall_linehor",
+                "crystall_linevert",
+                "crystall/crystall_bomb"
+            };
+
+            figureTexturePaths[2] = new string[4]
+            {
+                "heart/heart",
+                "heart/heart_linehor",
+                "heart/heart_linevert",
+                "heart/heart_bomb"
+            };
+
+            figureTexturePaths[3] = new string[4]
+            {
+                "pyramid/pyramid",
+                "pyramid/pyramid_linehor",
+                "pyramid/pyramid_linevert",
+                "pyramid/pyramid_bomb"
+            };
+
+            figureTexturePaths[4] = new string[4]
+            {
+                "square/square",
+                "square/square_linehor",
+                "square/square_linevert",
+                "square/square_bomb"
+            };
+            #endregion
+
+            #region figure animation
+
+            this.figureAnimationPaths = new string[5][];
+
+            this.figureAnimationPaths[0] = new string[3]
+            {
+                "circle/circle_shine1",
+                "circle/circle_shine2",
+                "circle/circle_shine3"
+            };
+
+            this.figureAnimationPaths[1] = new string[3]
+            {
+                "crystall/crystall_shine1",
+                "crystall/crystall_shine2",
+                "crystall/crystall_shine3"
+            };
+
+            this.figureAnimationPaths[2] = new string[3]
+            {
+                "heart/heart_shine1",
+                "heart/heart_shine2",
+                "heart/heart_shine3"
+            };
+
+            this.figureAnimationPaths[3] = new string[3]
+            {
+                "pyramid/pyramid_shine1",
+                "pyramid/pyramid_shine2",
+                "pyramid/pyramid_shine3"
+            };
+
+            this.figureAnimationPaths[4] = new string[3]
+            {
+                "square/square_shine1",
+                "square/square_shine2",
+                "square/square_shine3"
+            };
+            #endregion
+
+            #region effects
+
+            this.effectsPaths = new string[5] {
+                "blast",
+                "destroyer_down",
+                "destroyer_left",
+                "destroyer_right",
+                "destroyer_up"
+                    };
+            #endregion
+
+            /*
             Console.WriteLine(this.offset);
             Console.WriteLine(this.figure_size);
 
@@ -86,19 +209,19 @@ namespace Match3.GameEntities
                 + "\n" + "Bottom Left " + bounds[2].ToString() 
                 + "\n" + "Bottom Right " + bounds[3].ToString()
                 );
+            */
 
-            this.field = new Figure[FIELD_SIZE_HOR, FIELD_SIZE_VERT];
-            FieldCreate();
-            //locate(new Vector2(65, 180));
+            this.field = new Figure[FIELD_SIZE_HORIZONTAL, FIELD_SIZE_VERTICAL];
+            Create();
         }
 
         public Field()
         {
-            this.field = new Figure[FIELD_SIZE_HOR, FIELD_SIZE_VERT];
+            this.field = new Figure[FIELD_SIZE_HORIZONTAL, FIELD_SIZE_VERTICAL];
 
         }
 
-        public int FieldCreateFigureRand()
+        public int CreateFigure()
         {
             FigureTypes[] figures = ((FigureTypes[])Enum.GetValues(typeof(FigureTypes)));
             int figureType = (int)figures[new Random().Next(0, figures.Length)];
@@ -106,7 +229,7 @@ namespace Match3.GameEntities
             return figureType;
         }
 
-        public void FieldCreate()
+        public void Create()
         {
             for (int i = 0; i < 8; i++)
             {
@@ -114,22 +237,22 @@ namespace Match3.GameEntities
                 {       
                     //figure position on Screen
                     Vector2 figurePos = new Vector2(
-                        this.bounds[0].X + j * offset + j * figure_size + offset,
-                        this.bounds[0].Y + i * offset + i * figure_size + offset
+                        this.bounds[0].X + j * figureOffset + j * figureSize + figureOffset,
+                        this.bounds[0].Y + i * figureOffset + i * figureSize + figureOffset
                         );
 
                     //figure bounds
                     Vector2[] figureBounds = new Vector2[4]
                     {
                         figurePos,
-                        new Vector2(figurePos.X + figure_size, figurePos.Y),
-                        new Vector2(figurePos.X, figurePos.Y + figure_size),
-                        new Vector2(figurePos.X + figure_size, figurePos.Y + figure_size)
+                        new Vector2(figurePos.X + figureSize, figurePos.Y),
+                        new Vector2(figurePos.X, figurePos.Y + figureSize),
+                        new Vector2(figurePos.X + figureSize, figurePos.Y + figureSize)
                     };
 
-                    int type = FieldCreateFigureRand();
+                    int type = CreateFigure();
 
-                    Figure figure = new Figure(figurePos, figureBounds, type, textureset[type], animationset[type], effectsset);        // type, textureset[type], animationset[type], effectsset delta between all figures
+                    Figure figure = new Figure(figurePos, figureBounds, type, figurePrefixes, figureTexturePaths[type], figureAnimationPaths[type], effectsPaths, content);        // type, textureset[type], animationset[type], effectsset delta between all figures
                     this.field[j, i] = figure;
                 }
             }
@@ -141,22 +264,17 @@ namespace Match3.GameEntities
 
         }
 
-        public void FieldDraw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch)
         {
-            //spriteBatch.Begin();
+            spriteBatch.Draw(self.texture, bounds[0], Color.White);
 
-            spriteBatch.Draw(self, bounds[0], Color.White);
-
-            for (int i = 0; i < FIELD_SIZE_HOR; i++)
+            for (int i = 0; i < FIELD_SIZE_HORIZONTAL; i++)
             {
-                for (int j = 0; j < FIELD_SIZE_VERT; j++)
+                for (int j = 0; j < FIELD_SIZE_VERTICAL; j++)
                 {
-                    //field[i, j].Next();
                     spriteBatch.Draw(field[i, j].texture, field[i, j].position, Color.White);
                 }
             }
-
-            //spriteBatch.End();
         }
 
         public int[] FieldLocate(Vector2 position)       //field position by cursor position
@@ -168,9 +286,9 @@ namespace Match3.GameEntities
                 (position.Y >= bounds[0].Y) && (position.Y <= bounds[3].Y)
                 )
             {
-                for (int i = 0; i < FIELD_SIZE_HOR; i++)
+                for (int i = 0; i < FIELD_SIZE_HORIZONTAL; i++)
                 {
-                    for (int j = 0; j < FIELD_SIZE_VERT; j++)
+                    for (int j = 0; j < FIELD_SIZE_VERTICAL; j++)
                     {
                         if (
                            (position.X >= field[i, j].bounds[0].X) && (position.X <= field[i, j].bounds[1].X)
@@ -183,7 +301,6 @@ namespace Match3.GameEntities
                         }
                     }
                 }
-                //in between
                 Console.WriteLine("In Between");
                 return new int[2] { -1, -1 };
             }
@@ -203,7 +320,7 @@ namespace Match3.GameEntities
         }
         */
 
-        public void FieldInput(MouseState current, MouseState previous)
+        public void Input(MouseState current, MouseState previous)
         {
 
             if (
@@ -221,7 +338,7 @@ namespace Match3.GameEntities
                     Console.WriteLine("CURR" + currentFigure[0].ToString() + currentFigure[1].ToString());
                     Console.WriteLine("PREV" + previousFigure[0].ToString() + previousFigure[1].ToString());
                     
-                    FieldSwap(currentFigure[0], currentFigure[1], previousFigure[0], previousFigure[1]);
+                    Swap(currentFigure[0], currentFigure[1], previousFigure[0], previousFigure[1]);
 
                     if ((currentFigure[0] == previousFigure[0])&&(currentFigure[1] == previousFigure[1]))
                     {
@@ -251,10 +368,10 @@ namespace Match3.GameEntities
 
                     for (int k = 0; k < steps; k++)
                     {
-                        i = random.Next(0, FIELD_SIZE_HOR - 1);
-                        j = random.Next(0, FIELD_SIZE_VERT - 1);
+                        i = random.Next(0, FIELD_SIZE_HORIZONTAL - 1);
+                        j = random.Next(0, FIELD_SIZE_VERTICAL - 1);
                         seed = random.Next(0, 3);
-                        FieldGenerate(i, j, seed);
+                        Generate(i, j, seed);
                     }
                     break;
                 case 2:
@@ -262,10 +379,10 @@ namespace Match3.GameEntities
 
                     for (int k = 0; k < steps; k++)
                     {
-                        i = random.Next(0, FIELD_SIZE_HOR - 1);
-                        j = random.Next(0, FIELD_SIZE_VERT - 1);
+                        i = random.Next(0, FIELD_SIZE_HORIZONTAL - 1);
+                        j = random.Next(0, FIELD_SIZE_VERTICAL - 1);
                         seed = random.Next(0, 3);
-                        FieldGenerate(i, j, seed);
+                        Generate(i, j, seed);
                     }
 
                     break;
@@ -274,24 +391,24 @@ namespace Match3.GameEntities
 
                     for (int k = 0; k < steps; k++)
                     {
-                        i = random.Next(0, FIELD_SIZE_HOR - 1);
-                        j = random.Next(0, FIELD_SIZE_VERT - 1);
+                        i = random.Next(0, FIELD_SIZE_HORIZONTAL - 1);
+                        j = random.Next(0, FIELD_SIZE_VERTICAL - 1);
                         seed = random.Next(0, 3);
-                        FieldGenerate(i, j, seed);
+                        Generate(i, j, seed);
                     }
 
                     break;
             }
         }
 
-        public void FieldGenerate(int i, int j, int seed)
+        public void Generate(int i, int j, int seed)
         {
             int type = field[i, j].figureType;
 
             switch (seed)
             {
                 case 0:
-                    if (i + 2 < FIELD_SIZE_HOR)
+                    if (i + 2 < FIELD_SIZE_HORIZONTAL)
                     {
                         field[i + 1, j].figureType = type;
                         field[i + 1, j].texture = textureset[type][0];
@@ -301,7 +418,7 @@ namespace Match3.GameEntities
                         return;
                     }
 
-                    if ((i - 1 > 0) && (i + 1 < FIELD_SIZE_HOR))
+                    if ((i - 1 > 0) && (i + 1 < FIELD_SIZE_HORIZONTAL))
                     {
                         field[i + 1, j].figureType = type;
                         field[i + 1, j].texture = textureset[type][0];
@@ -328,7 +445,7 @@ namespace Match3.GameEntities
                     break;
 
                 case 2:
-                    if (j + 2 < FIELD_SIZE_HOR)
+                    if (j + 2 < FIELD_SIZE_HORIZONTAL)
                     {
                         field[i, j + 1].figureType = type;
                         field[i, j + 1].texture = textureset[type][0];
@@ -338,7 +455,7 @@ namespace Match3.GameEntities
                         return;
                     }
 
-                    if ((j - 1 > 0) && (j + 1 < FIELD_SIZE_HOR))
+                    if ((j - 1 > 0) && (j + 1 < FIELD_SIZE_HORIZONTAL))
                     {
                         field[i, j + 1].figureType = type;
                         field[i, j + 1].texture = textureset[type][0];
@@ -367,10 +484,17 @@ namespace Match3.GameEntities
         
 
 
-        public void FieldSwap(int i1, int j1, int i2, int j2)
+        public void Swap(int i1, int j1, int i2, int j2)
         {
             if ((i1 == -1) || (i2 == -1))
                 return;
+            /*
+            int type1 = field[i1, j1].figureType;
+            int type2 = field[i2, j2].figureType;
+
+            this.field[i1, j1].ChangeType(figureTexturePaths[type2], figureAnimationPaths[type2]);
+            this.field[i2, i2].ChangeType(figureTexturePaths[type1], figureAnimationPaths[type1]);
+            */
 
             Texture2D tempTex = this.field[i1, j1].texture;
             int type = this.field[i1, j1].figureType;
@@ -385,7 +509,7 @@ namespace Match3.GameEntities
 
         public void Update(MouseState current, MouseState previous)
         {
-            FieldInput(current, previous);
+            Input(current, previous);
         }
 
         public void Draw()      //debug
@@ -394,9 +518,9 @@ namespace Match3.GameEntities
 
             string output = string.Empty;
 
-            for (int i = 0; i < FIELD_SIZE_HOR; i++)
+            for (int i = 0; i < FIELD_SIZE_HORIZONTAL; i++)
             {
-                for (int j = 0; j < FIELD_SIZE_VERT; j++)
+                for (int j = 0; j < FIELD_SIZE_VERTICAL; j++)
                 {
                     output += this.field[j, i].figureType;
                 }

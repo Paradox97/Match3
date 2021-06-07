@@ -15,10 +15,7 @@ namespace Match3.States
     {
         Field field;
 
-
         public Texture2D[][]
-            textTextures,
-            buttonTextures,
             figureTextures,
             figureAnimationTextures;
 
@@ -35,69 +32,6 @@ namespace Match3.States
             Text classicText = new Text(classic, new Vector2(300, 80));
 
             this.screenContent = new List<ScreenContent>() { match3Text, classicText };
-
-            #region text textures
-
-            this.textTextures = new Texture2D[5][];  //menu textures and whatnot
-
-            this.textTextures[0] = new Texture2D[1]
-            {
-                content.Load<Texture2D>("text/Main_menu")
-            };
-
-            this.textTextures[1] = new Texture2D[2]
-            {
-                content.Load<Texture2D>("text/Match_3"),
-                content.Load<Texture2D>("text/Classic")
-            };
-
-            this.textTextures[2] = new Texture2D[1]
-            {
-                content.Load<Texture2D>("text/Game_over")
-            };
-
-            this.textTextures[3] = new Texture2D[1]
-            {
-                content.Load<Texture2D>("text/High_scores")
-            };
-
-
-            this.textTextures[4] = new Texture2D[1]
-            {
-                content.Load<Texture2D>("text/Are you sure")
-            };
-
-            #endregion
-
-            #region button textures
-
-            this.buttonTextures = new Texture2D[5][];  //button textures
-
-            this.buttonTextures[0] = new Texture2D[3]
-            {
-                content.Load<Texture2D>("buttons/Play"),
-                content.Load<Texture2D>("buttons/High_scores"),
-                content.Load<Texture2D>("buttons/Quit")
-            };
-
-            this.buttonTextures[1] = null;
-
-            this.buttonTextures[2] = new Texture2D[1]
-            {
-                content.Load<Texture2D>("buttons/Ok")
-            };
-
-            this.buttonTextures[3] = new Texture2D[1]
-            {
-                content.Load<Texture2D>("text/High_scores")
-            };
-
-            this.buttonTextures[4] = new Texture2D[2]
-            {
-                content.Load<Texture2D>("buttons/Yes"),
-                content.Load<Texture2D>("buttons/No")
-            };
-            #endregion
 
             #region figure textures
 
@@ -195,28 +129,25 @@ namespace Match3.States
                     };
             #endregion
 
-            #region field textures
+            //for resize purposes, resize later
+            float fieldHeight = 450, fieldWidth = 450, fieldOffset = 5f;
 
-            this.fieldTextures = new Texture2D[1]
-            {
-                content.Load<Texture2D>("fields/field_1")
-            };
+            float heightOffset = (game.Window.ClientBounds.Height - fieldOffset) - fieldHeight;         
+            float widthOffset =  (game.Window.ClientBounds.Height - fieldOffset) - fieldHeight;
 
-            #endregion
+            float figureSize = 50;
 
-            float fieldOffset = 5f;
-
-            float heightOffset = (game.Window.ClientBounds.Height - fieldOffset) - fieldTextures[0].Height;          //for resize purposes, resize later
+            string[] texturePathPrefixes = new string[3] { "fields/", "textures/", "effects/"};
 
             Vector2[] fieldBounds = new Vector2[4]
             {
                 new Vector2(fieldOffset, heightOffset),                                                        //topleft
-                new Vector2(fieldOffset + fieldTextures[0].Width, heightOffset),                               //topright
-                new Vector2(fieldOffset, heightOffset + fieldTextures[0].Height),                               //bottomleft
-                new Vector2(fieldOffset + fieldTextures[0].Width, heightOffset + fieldTextures[0].Height)       //bottomright
+                new Vector2(fieldOffset + fieldWidth, heightOffset),                               //topright
+                new Vector2(fieldOffset, heightOffset + fieldHeight),                               //bottomleft
+                new Vector2(fieldOffset + fieldWidth, heightOffset + fieldHeight)       //bottomright
             };
 
-            this.field = new Field(figureTextures, figureAnimationTextures, effectsTextures, fieldTextures, fieldBounds, fieldOffset);
+            this.field = new Field(figureTextures, figureAnimationTextures, effectsTextures, figureSize, fieldOffset, fieldBounds, content, texturePathPrefixes);
 
         }
 
@@ -230,7 +161,7 @@ namespace Match3.States
                 
                 content.Draw(gameTime, spriteBatch);
 
-            field.FieldDraw(spriteBatch);
+            field.Draw(spriteBatch);
 
             spriteBatch.End();
         }
@@ -249,7 +180,10 @@ namespace Match3.States
 
             field.Update(current, previous);
 
-            if (currentKeyboard.IsKeyDown(Keys.Escape))
+            if ((currentKeyboard.IsKeyDown(Keys.Escape) == true)
+                &&
+                (previousKeyboard.IsKeyDown(Keys.Escape) == false)
+                )
                 game.ChangeScreen(new MainMenuScreen(game, graphics, content));
 
         }
