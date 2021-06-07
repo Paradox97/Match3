@@ -19,7 +19,12 @@ namespace Match3.GameEntities
             this.texture = content.Load<Texture2D>(texturePath);
             this.position = position;
             this.origin = new Vector2(texture.Width / 2, texture.Height / 2);
-            this.color = Color.CornflowerBlue;
+            this.color = Color.White;
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(texture, position, color);
         }
 
         /*

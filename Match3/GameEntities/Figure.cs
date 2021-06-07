@@ -90,10 +90,7 @@ namespace Match3.GameEntities
 
         public void ChangeType(string[] texturePaths, string[] animationPaths)
         {
-            this.texturePaths = texturePaths;
-            this.animationPaths = animationPaths;
-
-            this.sprite = new Sprite(pathPrefixes[0] + texturePaths[0], position, content);
+            sprite = new Sprite(pathPrefixes[0] + texturePaths[0], position, content);
         }
 
 

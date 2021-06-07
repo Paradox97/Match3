@@ -272,7 +272,7 @@ namespace Match3.GameEntities
             {
                 for (int j = 0; j < FIELD_SIZE_VERTICAL; j++)
                 {
-                    spriteBatch.Draw(field[i, j].texture, field[i, j].position, Color.White);
+                    spriteBatch.Draw(field[i, j].texture, field[i,j].position, Color.White);
                 }
             }
         }
@@ -488,9 +488,13 @@ namespace Match3.GameEntities
         {
             if ((i1 == -1) || (i2 == -1))
                 return;
+
+
             /*
             int type1 = field[i1, j1].figureType;
             int type2 = field[i2, j2].figureType;
+
+            Console.WriteLine(type1.ToString() + type2.ToString());
 
             this.field[i1, j1].ChangeType(figureTexturePaths[type2], figureAnimationPaths[type2]);
             this.field[i2, i2].ChangeType(figureTexturePaths[type1], figureAnimationPaths[type1]);
