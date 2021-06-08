@@ -58,6 +58,10 @@ namespace Match3.GameEntities
 
             public string[] animationPaths;
 
+            public Vector2[] bounds;
+
+            public Vector2 position;
+
             public int type;
         }
 
@@ -70,19 +74,59 @@ namespace Match3.GameEntities
 
         private List<State> states;
 
-        const int MAX_STATES = 3;
-
-        public Figure(Vector2 position, Vector2[] bounds)
+        enum FigureClass
         {
-            this.position = position;
-            this.bounds = bounds;
+            bomb,
+            destroyerHorizontal,
+            destroyerVertical
         }
 
-        public Figure(Vector2 position, Vector2[] bounds, int type)
+        public int subType;
+
+        const int MAX_STATES = 3;
+        public void Bomb()
         {
-            this.position = position;
-            this.bounds = bounds;
-            this.figureType = type;
+
+        }
+
+        public void HorizontalDestroyer()
+        {
+
+        }
+
+        public void VerticalDestroyer()
+        {
+
+        }
+
+        public Figure(Figure figure, int newType, Field field, ContentManager content) //creating figure from another one
+        {
+            position = figure.position;
+            bounds = figure.bounds;
+            figureType = newType;
+
+            this.content = content;
+
+            this.pathPrefixes = field.figurePrefixes;
+            this.texturePaths = field.figureTexturePaths[figureType];
+            this.animationPaths = field.figureAnimationPaths[figureType];
+            this.effectsPaths = field.effectsPaths;
+
+            this.sprite = new Sprite(pathPrefixes[0] + texturePaths[0], position, content);
+            this.texture = sprite.texture;
+
+            states = new List<State>();
+            threadUnsafeAnimation = new List<animationState>();
+            Falldown();
+        }
+
+        public void Falldown()
+        {
+            for (int i = 200; i > -10;)
+            {
+                threadUnsafeAnimation.Add(new animationState() { position = this.position - new Vector2(0, i) });
+                i = i - 10;
+            }
         }
 
         public Figure(Vector2 position, Vector2[] bounds, int type, string[] prefixes, string[] texturePaths, string[] animationPaths, string[] effectsPaths, ContentManager content)
@@ -102,18 +146,8 @@ namespace Match3.GameEntities
             this.texture = sprite.texture;
 
             states = new List<State>();
-
             threadUnsafeAnimation = new List<animationState>();
-
-            for (int i = 200; i > -10;)
-            {
-                threadUnsafeAnimation.Add(new animationState() { position = this.position - new Vector2(0, i)});
-                i = i - 10;
-            }
-
-           // foreach (animationState animation in nextAnimationStates)
-             //   Console.WriteLine(animation.position);
-
+            Falldown();
         }
 
         public bool IsBusy()
@@ -126,9 +160,16 @@ namespace Match3.GameEntities
 
         public void Change(Figure next)
         {
-            states.Add(new State { texturePaths = next.texturePaths, animationPaths = next.animationPaths, effectsPaths = next.effectsPaths, type = next.figureType});
+            states.Add(new State {position = next.position, bounds = next.bounds});
 
             Console.WriteLine(states[0].type + "DSDSDSDAD");
+        }
+
+        public void ChangePosition(Figure next)
+        {
+
+
+
         }
 
         public void Update()
@@ -138,6 +179,8 @@ namespace Match3.GameEntities
             {
                 Console.WriteLine(states[0].type + "DSDSDSDAD");
 
+
+                /*
                 figureType = states[0].type;
 
                 texturePaths = states[0].texturePaths;
@@ -145,6 +188,9 @@ namespace Match3.GameEntities
                 animationPaths = states[0].animationPaths;
 
                 effectsPaths = states[0].effectsPaths;
+                */
+                position = states[0].position;
+                bounds = states[0].bounds;
             }
 
             Animate();

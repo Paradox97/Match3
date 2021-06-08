@@ -51,7 +51,7 @@ namespace Match3.GameEntities
         string 
             path;
 
-        string[] figurePrefixes;
+        public string[] figurePrefixes;
         string prefix;
 
         //field boundaries
@@ -247,7 +247,7 @@ namespace Match3.GameEntities
                 }
             }
 
-            //GenerateByDifficulty(1);
+            GenerateByDifficulty(1);
 
 
 
@@ -402,22 +402,15 @@ namespace Match3.GameEntities
                 case 0:
                     if (i + 2 < FIELD_SIZE_HORIZONTAL)
                     {
-                        field[i + 1, j].figureType = type;
-                        //field[i + 1, j].texture = textureset[type][0];
-
-                        field[i + 2, j].figureType = type;
-                        //field[i + 2, j].texture = textureset[type][0];
+                        field[i + 1, j] = new Figure(field[i + 1, j], type, this, content);
+                        field[i + 2, j] = new Figure(field[i + 2, j], type, this, content);
                         return;
                     }
 
                     if ((i - 1 > 0) && (i + 1 < FIELD_SIZE_HORIZONTAL))
                     {
-                        field[i + 1, j].figureType = type;
-                        //field[i + 1, j].texture = textureset[type][0];
-
-
-                        field[i - 1, j].figureType = type;
-                        //field[i - 1, j].texture = textureset[type][0];
+                        field[i + 1, j] = new Figure(field[i + 1, j], type, this, content);
+                        field[i - 1, j] = new Figure(field[i - 1, j], type, this, content);
                         return;
                     }
 
@@ -426,11 +419,8 @@ namespace Match3.GameEntities
                 case 1:
                     if (i - 2 > 0)
                     {
-                        field[i - 1, j].figureType = type;
-                        //field[i - 1, j].texture = textureset[type][0];
-
-                        field[i - 2, j].figureType = type;
-                        //field[i - 2, j].texture = textureset[type][0];
+                        field[i - 1, j] = new Figure(field[i - 1, j], type, this, content);
+                        field[i - 2, j] = new Figure(field[i - 2, j], type, this, content);
                         return;
                     }
 
@@ -439,21 +429,15 @@ namespace Match3.GameEntities
                 case 2:
                     if (j + 2 < FIELD_SIZE_HORIZONTAL)
                     {
-                        field[i, j + 1].figureType = type;
-                       // field[i, j + 1].texture = textureset[type][0];
-
-                        field[i, j + 2].figureType = type;
-                        //field[i, j + 2].texture = textureset[type][0];
+                        field[i, j + 1] = new Figure(field[i, j + 1], type, this, content);
+                        field[i, j + 2] = new Figure(field[i, j + 2], type, this, content);
                         return;
                     }
 
                     if ((j - 1 > 0) && (j + 1 < FIELD_SIZE_HORIZONTAL))
                     {
-                        field[i, j + 1].figureType = type;
-                        //field[i, j + 1].texture = textureset[type][0];
-
-                        field[i, j - 1].figureType = type;
-                        //field[i, j - 1].texture = textureset[type][0];
+                        field[i, j + 1] = new Figure(field[i, j + 1], type, this, content);
+                        field[i, j - 1] = new Figure(field[i, j - 1], type, this, content);
                         return;
                     }
 
@@ -462,11 +446,8 @@ namespace Match3.GameEntities
                 case 3:
                     if (j - 2 > 0)
                     {
-                        field[i, j - 1].figureType = type;
-                        //field[i, j - 1].texture = textureset[type][0];
-
-                        field[i, j - 2].figureType = type;
-                        //field[i, j - 2].texture = textureset[type][0];
+                        field[i, j - 1] = new Figure(field[i, j - 1], type, this, content);
+                        field[i, j - 2] = new Figure(field[i, j - 2], type, this, content);
                         return;
                     }
 
@@ -475,72 +456,22 @@ namespace Match3.GameEntities
         }
         
 
+        public void PassPaths(object sender, EventArgs args)
+        {
+
+        }
 
         public void Swap(int i1, int j1, int i2, int j2)
         {
             if ((i1 == -1) || (i2 == -1))
                 return;
 
-            int type1 = field[i1, j1].figureType;
-            int type2 = field[i2, j2].figureType;
+            int type = 4;
 
-            //Console.WriteLine(type1.ToString() + type2.ToString());
-            //Console.WriteLine(figureTexturePaths[type1][0] + figureTexturePaths[type2][0]);
-
-            //this.field[i1, j1].ChangeType(field[i2,j2].texturePaths[0]);
-            //this.field[i2, i2].ChangeType(field[i1, j1].texturePaths[0]);
-            /*
-            Vector2 figurePos = field[i2, j2].position;
-            Vector2[] figureBounds = field[i2, j2].bounds;
-
-            Vector2 pos2 = field[i1, j1].position;
-            Vector2[] b2 = field[i2, j2].bounds;
-
-            int type = field[i1, j1].figureType;
-            int typ2 = field[i2, j2].figureType;
-
-            string[] pref = field[i1, j1].pathPrefixes;
-            string[] paths = field[i1, j1].texturePaths;
-
-            string[] pref2 = field[i1, j1].pathPrefixes;
-            string[] paths2 = field[i1, j1].texturePaths;
-
-            string[] animations = field[i1, j1].animationPaths;
-            string[] effects = field[i1, j1].effectsPaths;
-
-            string[] animations2 = field[i1, j1].animationPaths;
-            string[] effects2 = field[i1, j1].effectsPaths;
-
-            Figure figure = new Figure(figurePos, figureBounds, type, pref, paths, animations, effects, content);
-
-            Figure figure2 = new Figure(pos2, b2, typ2, pref2, paths2, animations2, effects2, content);
-
-            this.field[i1, j1] = figure2;
-
-            this.field[i2, j2] = figure;
-
-            */
-
-            //Figure figure = new Figure(figurePos, figureBounds, type, figurePrefixes, figureTexturePaths[type], figureAnimationPaths[type], effectsPaths, content);       
-            /*
-            Texture2D tempTexture = this.field[i1, j1].texture;
-            int type = this.field[i1, j1].figureType;
-
-            this.field[i1, j1].texture = this.field[i2, j2].texture;
-            this.field[i1, j1].figureType = this.field[i2, j2].figureType;
-
-            this.field[i2, j2].texture = tempTexture;
-            this.field[i2, j2].figureType = type;
-            */
-
-            //Texture2D tempTexture = field[i1, j1].sprite.texture;
-            //field[i1, j1].sprite.texture = field[i2, j2].sprite.texture;
-            //field[i2, j2].sprite.texture = tempTexture;
-
-            string[] temp = field[i1, j1].texturePaths;
-
-            field[i1, j1].Change(field[i2, j2]);
             field[i2, j2].Change(field[i1, j1]);
+            field[i1, j1].Change(field[i2, j2]);
+
+            //field[i1, j1] = new Figure(field[i2, j2], type, figurePrefixes, figureTexturePaths[type], figureAnimationPaths[type], effectsPaths, content);
         }
 
 
