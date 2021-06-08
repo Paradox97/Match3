@@ -38,6 +38,10 @@ namespace Match3.GameEntities
 
         public int
             state, stateByTime = 15;
+        
+        int stateOfAnimation;
+
+        const int ANIMATIONTIME = 1;
 
         public bool
             isSelected,
@@ -46,7 +50,28 @@ namespace Match3.GameEntities
             isFalling,
             isDestroyed;
 
+        private struct State{
+            
+            public string[] texturePaths;
+
+            public string[] effectsPaths;
+
+            public string[] animationPaths;
+
+            public int type;
+        }
+
+        private struct animationState
+        {
+            public Vector2 position;
+        }
+
+        private List<animationState> threadUnsafeAnimation;
+
+        private List<State> states;
+
         const int MAX_STATES = 3;
+
         public Figure(Vector2 position, Vector2[] bounds)
         {
             this.position = position;
@@ -58,17 +83,6 @@ namespace Match3.GameEntities
             this.position = position;
             this.bounds = bounds;
             this.figureType = type;
-        }
-
-        public Figure(Vector2 position, Vector2[] bounds, int type, Texture2D[] textureSet, Texture2D[] animationSet, Texture2D[] effectsSet)
-        {
-            this.position = position;
-            this.bounds = bounds;
-            this.figureType = type;
-            this.textureset = textureSet;
-            this.animationset = animationSet;
-            this.effectsset = effectsSet;
-            this.texture = textureset[0];
         }
 
         public Figure(Vector2 position, Vector2[] bounds, int type, string[] prefixes, string[] texturePaths, string[] animationPaths, string[] effectsPaths, ContentManager content)
@@ -86,22 +100,100 @@ namespace Match3.GameEntities
 
             this.sprite = new Sprite(pathPrefixes[0] + texturePaths[0], position, content);
             this.texture = sprite.texture;
+
+            states = new List<State>();
+
+            threadUnsafeAnimation = new List<animationState>();
+
+            for (int i = 200; i > -10;)
+            {
+                threadUnsafeAnimation.Add(new animationState() { position = this.position - new Vector2(0, i)});
+                i = i - 10;
+            }
+
+           // foreach (animationState animation in nextAnimationStates)
+             //   Console.WriteLine(animation.position);
+
         }
 
-        public void ChangeType(string[] texturePaths, string[] animationPaths)
+        public bool IsBusy()
         {
-            sprite = new Sprite(pathPrefixes[0] + texturePaths[0], position, content);
+            if (threadUnsafeAnimation.Count != 0)
+                return true;
+
+            return false;
         }
 
-
-        public void FigureGetTexture(Texture2D[] textureSet, Texture2D[] animationSet, Texture2D[] effectsSet)
+        public void Change(Figure next)
         {
-            this.textureset = textureSet;
-            this.animationset = animationSet;
-            this.effectsset = effectsSet;
-            this.texture = textureset[0];
+            states.Add(new State { texturePaths = next.texturePaths, animationPaths = next.animationPaths, effectsPaths = next.effectsPaths, type = next.figureType});
 
-            //this.sprite = new Sprite(textureSet, animationSet, effectsSet, position);
+            Console.WriteLine(states[0].type + "DSDSDSDAD");
+        }
+
+        public void Update()
+        {
+
+            if (states.Count != 0)
+            {
+                Console.WriteLine(states[0].type + "DSDSDSDAD");
+
+                figureType = states[0].type;
+
+                texturePaths = states[0].texturePaths;
+
+                animationPaths = states[0].animationPaths;
+
+                effectsPaths = states[0].effectsPaths;
+            }
+
+            Animate();
+            //texture = content.Load<Texture2D>(pathPrefixes[0] + texturePaths[0]);
+        }
+
+        public void PostUpdate()
+        {
+            ReAnimate();
+
+            if (states.Count != 0)
+            {
+                sprite = new Sprite(pathPrefixes[0] + texturePaths[0], position, content);
+                states.RemoveAt(0);
+            }
+
+         /*   if (nextAnimationStates.Count != 0)
+            {
+                sprite = new Sprite(pathPrefixes[0] + texturePaths[0], position, content);
+                nextAnimationStates.RemoveAt(0);
+            }
+         */
+        }
+
+        public void Animate()
+        {
+            if (threadUnsafeAnimation.Count == 0)
+                return;
+            
+            stateOfAnimation += 1;
+
+            if (stateOfAnimation % ANIMATIONTIME == 0)
+            {
+                position = threadUnsafeAnimation[0].position;
+            }
+        }
+
+        public void ReAnimate()
+        {
+            if ((stateOfAnimation % ANIMATIONTIME == 0) && (threadUnsafeAnimation.Count != 0))
+            {
+                sprite = new Sprite(pathPrefixes[0] + texturePaths[0], position, content);
+                threadUnsafeAnimation.RemoveAt(0);
+            }
+        }
+
+        public void Draw(SpriteBatch spritebatch)
+        {
+            sprite.Draw(spritebatch);
         }
 
         public void Next()

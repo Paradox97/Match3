@@ -73,22 +73,12 @@ namespace Match3.GameEntities
 
         public string[] effectsPaths;
 
-        public Texture2D[][] 
-            textureset, //all the textures of game objects
-            animationset;
-        
-        public Texture2D[] effectsset;
-
         //public Texture2D self;          //field texture
 
         public Sprite self;
 
-        public Field(Texture2D[][] textureSet, Texture2D[][] animationSet, Texture2D[] effectsSet, float figureSize, float offset, Vector2[] bounds, ContentManager content, string[] pathPrefixes)
+        public Field(float figureSize, float offset, Vector2[] bounds, ContentManager content, string[] pathPrefixes)
         {
-            textureset = textureSet;
-            animationset = animationSet;
-            effectsset = effectsSet;
-
             this.content = content;
             
             prefix = pathPrefixes[0];
@@ -257,7 +247,7 @@ namespace Match3.GameEntities
                 }
             }
 
-            GenerateByDifficulty(1);
+            //GenerateByDifficulty(1);
 
 
 
@@ -272,7 +262,7 @@ namespace Match3.GameEntities
             {
                 for (int j = 0; j < FIELD_SIZE_VERTICAL; j++)
                 {
-                    spriteBatch.Draw(field[i, j].texture, field[i,j].position, Color.White);
+                    field[i, j].Draw(spriteBatch);
                 }
             }
         }
@@ -322,6 +312,8 @@ namespace Match3.GameEntities
 
         public void Input(MouseState current, MouseState previous)
         {
+
+
 
             if (
                 (current.LeftButton == ButtonState.Pressed)
@@ -411,21 +403,21 @@ namespace Match3.GameEntities
                     if (i + 2 < FIELD_SIZE_HORIZONTAL)
                     {
                         field[i + 1, j].figureType = type;
-                        field[i + 1, j].texture = textureset[type][0];
+                        //field[i + 1, j].texture = textureset[type][0];
 
                         field[i + 2, j].figureType = type;
-                        field[i + 2, j].texture = textureset[type][0];
+                        //field[i + 2, j].texture = textureset[type][0];
                         return;
                     }
 
                     if ((i - 1 > 0) && (i + 1 < FIELD_SIZE_HORIZONTAL))
                     {
                         field[i + 1, j].figureType = type;
-                        field[i + 1, j].texture = textureset[type][0];
+                        //field[i + 1, j].texture = textureset[type][0];
 
 
                         field[i - 1, j].figureType = type;
-                        field[i - 1, j].texture = textureset[type][0];
+                        //field[i - 1, j].texture = textureset[type][0];
                         return;
                     }
 
@@ -435,10 +427,10 @@ namespace Match3.GameEntities
                     if (i - 2 > 0)
                     {
                         field[i - 1, j].figureType = type;
-                        field[i - 1, j].texture = textureset[type][0];
+                        //field[i - 1, j].texture = textureset[type][0];
 
                         field[i - 2, j].figureType = type;
-                        field[i - 2, j].texture = textureset[type][0];
+                        //field[i - 2, j].texture = textureset[type][0];
                         return;
                     }
 
@@ -448,20 +440,20 @@ namespace Match3.GameEntities
                     if (j + 2 < FIELD_SIZE_HORIZONTAL)
                     {
                         field[i, j + 1].figureType = type;
-                        field[i, j + 1].texture = textureset[type][0];
+                       // field[i, j + 1].texture = textureset[type][0];
 
                         field[i, j + 2].figureType = type;
-                        field[i, j + 2].texture = textureset[type][0];
+                        //field[i, j + 2].texture = textureset[type][0];
                         return;
                     }
 
                     if ((j - 1 > 0) && (j + 1 < FIELD_SIZE_HORIZONTAL))
                     {
                         field[i, j + 1].figureType = type;
-                        field[i, j + 1].texture = textureset[type][0];
+                        //field[i, j + 1].texture = textureset[type][0];
 
                         field[i, j - 1].figureType = type;
-                        field[i, j - 1].texture = textureset[type][0];
+                        //field[i, j - 1].texture = textureset[type][0];
                         return;
                     }
 
@@ -471,10 +463,10 @@ namespace Match3.GameEntities
                     if (j - 2 > 0)
                     {
                         field[i, j - 1].figureType = type;
-                        field[i, j - 1].texture = textureset[type][0];
+                        //field[i, j - 1].texture = textureset[type][0];
 
                         field[i, j - 2].figureType = type;
-                        field[i, j - 2].texture = textureset[type][0];
+                        //field[i, j - 2].texture = textureset[type][0];
                         return;
                     }
 
@@ -489,31 +481,108 @@ namespace Match3.GameEntities
             if ((i1 == -1) || (i2 == -1))
                 return;
 
-
-            /*
             int type1 = field[i1, j1].figureType;
             int type2 = field[i2, j2].figureType;
 
-            Console.WriteLine(type1.ToString() + type2.ToString());
+            //Console.WriteLine(type1.ToString() + type2.ToString());
+            //Console.WriteLine(figureTexturePaths[type1][0] + figureTexturePaths[type2][0]);
 
-            this.field[i1, j1].ChangeType(figureTexturePaths[type2], figureAnimationPaths[type2]);
-            this.field[i2, i2].ChangeType(figureTexturePaths[type1], figureAnimationPaths[type1]);
+            //this.field[i1, j1].ChangeType(field[i2,j2].texturePaths[0]);
+            //this.field[i2, i2].ChangeType(field[i1, j1].texturePaths[0]);
+            /*
+            Vector2 figurePos = field[i2, j2].position;
+            Vector2[] figureBounds = field[i2, j2].bounds;
+
+            Vector2 pos2 = field[i1, j1].position;
+            Vector2[] b2 = field[i2, j2].bounds;
+
+            int type = field[i1, j1].figureType;
+            int typ2 = field[i2, j2].figureType;
+
+            string[] pref = field[i1, j1].pathPrefixes;
+            string[] paths = field[i1, j1].texturePaths;
+
+            string[] pref2 = field[i1, j1].pathPrefixes;
+            string[] paths2 = field[i1, j1].texturePaths;
+
+            string[] animations = field[i1, j1].animationPaths;
+            string[] effects = field[i1, j1].effectsPaths;
+
+            string[] animations2 = field[i1, j1].animationPaths;
+            string[] effects2 = field[i1, j1].effectsPaths;
+
+            Figure figure = new Figure(figurePos, figureBounds, type, pref, paths, animations, effects, content);
+
+            Figure figure2 = new Figure(pos2, b2, typ2, pref2, paths2, animations2, effects2, content);
+
+            this.field[i1, j1] = figure2;
+
+            this.field[i2, j2] = figure;
+
             */
 
-            Texture2D tempTex = this.field[i1, j1].texture;
+            //Figure figure = new Figure(figurePos, figureBounds, type, figurePrefixes, figureTexturePaths[type], figureAnimationPaths[type], effectsPaths, content);       
+            /*
+            Texture2D tempTexture = this.field[i1, j1].texture;
             int type = this.field[i1, j1].figureType;
 
             this.field[i1, j1].texture = this.field[i2, j2].texture;
             this.field[i1, j1].figureType = this.field[i2, j2].figureType;
 
-            this.field[i2, j2].texture = tempTex;
+            this.field[i2, j2].texture = tempTexture;
             this.field[i2, j2].figureType = type;
+            */
+
+            //Texture2D tempTexture = field[i1, j1].sprite.texture;
+            //field[i1, j1].sprite.texture = field[i2, j2].sprite.texture;
+            //field[i2, j2].sprite.texture = tempTexture;
+
+            string[] temp = field[i1, j1].texturePaths;
+
+            field[i1, j1].Change(field[i2, j2]);
+            field[i2, j2].Change(field[i1, j1]);
         }
 
 
         public void Update(MouseState current, MouseState previous)
         {
-            Input(current, previous);
+            bool isBusy = false;
+
+            for (int i = 0; i < FIELD_SIZE_HORIZONTAL; i++)
+            {
+                for (int j = 0; j < FIELD_SIZE_VERTICAL; j++)
+                {
+                    if (field[i, j].IsBusy())
+                    {
+                        isBusy = true;
+                        break;
+                    }
+                }
+                if (isBusy == true)
+                    break;
+            }
+
+            if (isBusy == false)
+                Input(current, previous);
+
+
+            for (int i = 0; i < FIELD_SIZE_HORIZONTAL; i++)
+            {
+                for (int j = 0; j < FIELD_SIZE_VERTICAL; j++)
+                {
+                    field[i, j].Update();
+                }
+            }
+
+            for (int i = 0; i < FIELD_SIZE_HORIZONTAL; i++)
+            {
+                for (int j = 0; j < FIELD_SIZE_VERTICAL; j++)
+                {
+                    field[i, j].PostUpdate();
+                }
+            }
+
+
         }
 
         public void Draw()      //debug

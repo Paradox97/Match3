@@ -15,14 +15,6 @@ namespace Match3.States
     {
         Field field;
 
-        public Texture2D[][]
-            figureTextures,
-            figureAnimationTextures;
-
-        public Texture2D[]
-            effectsTextures,
-            fieldTextures;
-
         public GameScreen(MatchGame game, GraphicsDeviceManager graphics, ContentManager content) : base(game, graphics, content)
         { 
             Texture2D match3 = content.Load<Texture2D>("text/Match_3");
@@ -32,102 +24,6 @@ namespace Match3.States
             Text classicText = new Text(classic, new Vector2(300, 80));
 
             this.screenContent = new List<ScreenContent>() { match3Text, classicText };
-
-            #region figure textures
-
-            this.figureTextures = new Texture2D[5][];
-
-            this.figureTextures[0] = new Texture2D[4]
-           {
-                content.Load<Texture2D>("textures/circle/circle"),
-                content.Load<Texture2D>("textures/circle/circle_linehor"),
-                content.Load<Texture2D>("textures/circle/circle_linevert"),
-                content.Load<Texture2D>("textures/circle/circle_bomb")
-           };
-
-            this.figureTextures[1] = new Texture2D[4]
-           {
-                content.Load<Texture2D>("textures/crystall/crystall"),
-                content.Load<Texture2D>("textures/crystall/crystall_linehor"),
-                content.Load<Texture2D>("textures/crystall/crystall_linevert"),
-                content.Load<Texture2D>("textures/crystall/crystall_bomb")
-           };
-
-            this.figureTextures[2] = new Texture2D[4]
-           {
-                content.Load<Texture2D>("textures/heart/heart"),
-                content.Load<Texture2D>("textures/heart/heart_linehor"),
-                content.Load<Texture2D>("textures/heart/heart_linevert"),
-                content.Load<Texture2D>("textures/heart/heart_bomb")
-           };
-
-            this.figureTextures[3] = new Texture2D[4]
-           {
-                content.Load<Texture2D>("textures/pyramid/pyramid"),
-                content.Load<Texture2D>("textures/pyramid/pyramid_linehor"),
-                content.Load<Texture2D>("textures/pyramid/pyramid_linevert"),
-                content.Load<Texture2D>("textures/pyramid/pyramid_bomb")
-           };
-
-            this.figureTextures[4] = new Texture2D[4]
-           {
-                content.Load<Texture2D>("textures/square/square"),
-                content.Load<Texture2D>("textures/square/square_linehor"),
-                content.Load<Texture2D>("textures/square/square_linevert"),
-                content.Load<Texture2D>("textures/square/square_bomb")
-           };
-            #endregion
-
-            #region figure animation
-
-            this.figureAnimationTextures = new Texture2D[5][];
-
-            this.figureAnimationTextures[0] = new Texture2D[3]
-           {
-                content.Load<Texture2D>("textures/circle/circle_shine1"),
-                content.Load<Texture2D>("textures/circle/circle_shine2"),
-                content.Load<Texture2D>("textures/circle/circle_shine3")
-           };
-
-            this.figureAnimationTextures[1] = new Texture2D[3]
-           {
-                content.Load<Texture2D>("textures/crystall/crystall_shine1"),
-                content.Load<Texture2D>("textures/crystall/crystall_shine2"),
-                content.Load<Texture2D>("textures/crystall/crystall_shine3")
-           };
-
-            this.figureAnimationTextures[2] = new Texture2D[3]
-           {
-                content.Load<Texture2D>("textures/heart/heart_shine1"),
-                content.Load<Texture2D>("textures/heart/heart_shine2"),
-                content.Load<Texture2D>("textures/heart/heart_shine3")
-           };
-
-            this.figureAnimationTextures[3] = new Texture2D[3]
-           {
-                content.Load<Texture2D>("textures/pyramid/pyramid_shine1"),
-                content.Load<Texture2D>("textures/pyramid/pyramid_shine2"),
-                content.Load<Texture2D>("textures/pyramid/pyramid_shine3")
-           };
-
-            this.figureAnimationTextures[4] = new Texture2D[3]
-           {
-                content.Load<Texture2D>("textures/square/square_shine1"),
-                content.Load<Texture2D>("textures/square/square_shine2"),
-                content.Load<Texture2D>("textures/square/square_shine3")
-           };
-            #endregion
-
-            #region effects textures
-
-            this.effectsTextures = new Texture2D[5] {
-                content.Load<Texture2D>("effects/blast"),
-                content.Load<Texture2D>("effects/destroyer_down"),
-                content.Load<Texture2D>("effects/destroyer_left"),
-                content.Load<Texture2D>("effects/destroyer_right"),
-                content.Load<Texture2D>("effects/destroyer_up")
-                    };
-            #endregion
 
             //for resize purposes, resize later
             float fieldHeight = 450, fieldWidth = 450, fieldOffset = 5f;
@@ -147,7 +43,7 @@ namespace Match3.States
                 new Vector2(fieldOffset + fieldWidth, heightOffset + fieldHeight)       //bottomright
             };
 
-            this.field = new Field(figureTextures, figureAnimationTextures, effectsTextures, figureSize, fieldOffset, fieldBounds, content, texturePathPrefixes);
+            this.field = new Field(figureSize, fieldOffset, fieldBounds, content, texturePathPrefixes);
 
         }
 
