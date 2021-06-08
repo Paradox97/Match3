@@ -71,6 +71,17 @@ namespace Match3.GameEntities
             figureTexturePaths,
             figureAnimationPaths;
 
+        public struct Paths{ 
+         
+         public string[] figurePrefixes;
+         public string[][]
+                figureTexturePaths,
+                figureAnimationPaths;
+         public string[] effectsPaths;
+        }
+
+        protected Paths dictionary;
+
         public string[] effectsPaths;
 
         //public Texture2D self;          //field texture
@@ -189,6 +200,14 @@ namespace Match3.GameEntities
                     };
             #endregion
 
+            dictionary = new Paths()
+            {
+                figurePrefixes = figurePrefixes,
+                figureTexturePaths = figureTexturePaths,
+                figureAnimationPaths = figureAnimationPaths,
+                effectsPaths = effectsPaths
+            };
+
             /*
             Console.WriteLine(this.offset);
             Console.WriteLine(this.figure_size);
@@ -242,7 +261,9 @@ namespace Match3.GameEntities
 
                     int type = CreateFigure();
 
-                    Figure figure = new Figure(figurePos, figureBounds, type, figurePrefixes, figureTexturePaths[type], figureAnimationPaths[type], effectsPaths, content);        // type, textureset[type], animationset[type], effectsset delta between all figures
+
+                    Figure figure = new Figure(figurePos, figureBounds, type, dictionary, content);
+                    //Figure figure = new Figure(figurePos, figureBounds, type, figurePrefixes, figureTexturePaths[type], figureAnimationPaths[type], effectsPaths, content);        // type, textureset[type], animationset[type], effectsset delta between all figures
                     this.field[j, i] = figure;
                 }
             }
@@ -402,15 +423,15 @@ namespace Match3.GameEntities
                 case 0:
                     if (i + 2 < FIELD_SIZE_HORIZONTAL)
                     {
-                        field[i + 1, j] = new Figure(field[i + 1, j], type, this, content);
-                        field[i + 2, j] = new Figure(field[i + 2, j], type, this, content);
+                        field[i + 1, j] = new Figure(field[i + 1, j], type, dictionary, content);
+                        field[i + 2, j] = new Figure(field[i + 2, j], type, dictionary, content);
                         return;
                     }
 
                     if ((i - 1 > 0) && (i + 1 < FIELD_SIZE_HORIZONTAL))
                     {
-                        field[i + 1, j] = new Figure(field[i + 1, j], type, this, content);
-                        field[i - 1, j] = new Figure(field[i - 1, j], type, this, content);
+                        field[i + 1, j] = new Figure(field[i + 1, j], type, dictionary, content);
+                        field[i - 1, j] = new Figure(field[i - 1, j], type, dictionary, content);
                         return;
                     }
 
@@ -419,8 +440,8 @@ namespace Match3.GameEntities
                 case 1:
                     if (i - 2 > 0)
                     {
-                        field[i - 1, j] = new Figure(field[i - 1, j], type, this, content);
-                        field[i - 2, j] = new Figure(field[i - 2, j], type, this, content);
+                        field[i - 1, j] = new Figure(field[i - 1, j], type, dictionary, content);
+                        field[i - 2, j] = new Figure(field[i - 2, j], type, dictionary, content);
                         return;
                     }
 
@@ -429,15 +450,15 @@ namespace Match3.GameEntities
                 case 2:
                     if (j + 2 < FIELD_SIZE_HORIZONTAL)
                     {
-                        field[i, j + 1] = new Figure(field[i, j + 1], type, this, content);
-                        field[i, j + 2] = new Figure(field[i, j + 2], type, this, content);
+                        field[i, j + 1] = new Figure(field[i, j + 1], type, dictionary, content);
+                        field[i, j + 2] = new Figure(field[i, j + 2], type, dictionary, content);
                         return;
                     }
 
                     if ((j - 1 > 0) && (j + 1 < FIELD_SIZE_HORIZONTAL))
                     {
-                        field[i, j + 1] = new Figure(field[i, j + 1], type, this, content);
-                        field[i, j - 1] = new Figure(field[i, j - 1], type, this, content);
+                        field[i, j + 1] = new Figure(field[i, j + 1], type, dictionary, content);
+                        field[i, j - 1] = new Figure(field[i, j - 1], type, dictionary, content);
                         return;
                     }
 
@@ -446,8 +467,8 @@ namespace Match3.GameEntities
                 case 3:
                     if (j - 2 > 0)
                     {
-                        field[i, j - 1] = new Figure(field[i, j - 1], type, this, content);
-                        field[i, j - 2] = new Figure(field[i, j - 2], type, this, content);
+                        field[i, j - 1] = new Figure(field[i, j - 1], type, dictionary, content);
+                        field[i, j - 2] = new Figure(field[i, j - 2], type, dictionary, content);
                         return;
                     }
 

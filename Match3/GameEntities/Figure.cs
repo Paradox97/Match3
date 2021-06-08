@@ -99,7 +99,7 @@ namespace Match3.GameEntities
 
         }
 
-        public Figure(Figure figure, int newType, Field field, ContentManager content) //creating figure from another one
+        public Figure(Figure figure, int newType, Field.Paths dictionary, ContentManager content) //creating figure from another one
         {
             position = figure.position;
             bounds = figure.bounds;
@@ -107,10 +107,31 @@ namespace Match3.GameEntities
 
             this.content = content;
 
-            this.pathPrefixes = field.figurePrefixes;
-            this.texturePaths = field.figureTexturePaths[figureType];
-            this.animationPaths = field.figureAnimationPaths[figureType];
-            this.effectsPaths = field.effectsPaths;
+            this.pathPrefixes = dictionary.figurePrefixes;
+            this.texturePaths = dictionary.figureTexturePaths[figureType];
+            this.animationPaths = dictionary.figureAnimationPaths[figureType];
+            this.effectsPaths = dictionary.effectsPaths;
+
+            this.sprite = new Sprite(pathPrefixes[0] + texturePaths[0], position, content);
+            this.texture = sprite.texture;
+
+            states = new List<State>();
+            threadUnsafeAnimation = new List<animationState>();
+            Falldown();
+        }
+
+        public Figure(Vector2 position, Vector2[] bounds, int type, Field.Paths dictionary, ContentManager content) //creating figure from another one
+        {
+            this.position = position;
+            this.bounds = bounds;
+            figureType = type;
+
+            this.content = content;
+
+            this.pathPrefixes = dictionary.figurePrefixes;
+            this.texturePaths = dictionary.figureTexturePaths[figureType];
+            this.animationPaths = dictionary.figureAnimationPaths[figureType];
+            this.effectsPaths = dictionary.effectsPaths;
 
             this.sprite = new Sprite(pathPrefixes[0] + texturePaths[0], position, content);
             this.texture = sprite.texture;
