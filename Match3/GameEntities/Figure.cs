@@ -20,10 +20,7 @@ namespace Match3.GameEntities
 
         public string[] animationPaths;
 
-        public Texture2D[]
-            textureset,
-            animationset,
-            effectsset;
+        public EventHandler click;
 
         public Texture2D
             texture;
@@ -35,6 +32,8 @@ namespace Match3.GameEntities
         public Vector2 position;
 
         public int figureType;
+
+        const int FIGURESIZE = 50;
 
         public int
             state, stateByTime = 15;
@@ -50,36 +49,36 @@ namespace Match3.GameEntities
             isFalling,
             isDestroyed;
 
-        private struct State{
-            
+        private struct State
+        {
             public string[] texturePaths;
 
             public string[] effectsPaths;
 
             public string[] animationPaths;
 
-            public Vector2[] bounds;
-
-            public Vector2 position;
-
             public int type;
+
+            public int subType;
         }
 
         private struct animationState
         {
             public Vector2 position;
+
+            public string[] texturePaths;
+
+            public string[] effectsPaths;
+
+            public string[] animationPaths;
         }
 
-        private List<animationState> threadUnsafeAnimation;
+        private MouseState currentMouseState,
+            previousMouseState;
 
-        private List<State> states;
 
-        enum FigureClass
-        {
-            bomb,
-            destroyerHorizontal,
-            destroyerVertical
-        }
+        private List<animationState> animationStates;
+        private List<State> figureStates;
 
         public int subType;
 
@@ -99,7 +98,7 @@ namespace Match3.GameEntities
 
         }
 
-        public Figure(Figure figure, int newType, Field.Paths dictionary, ContentManager content) //creating figure from another one
+        public Figure(Figure figure, int newType, Paths paths, ContentManager content) //creating new figure from another one
         {
             position = figure.position;
             bounds = figure.bounds;
@@ -107,20 +106,54 @@ namespace Match3.GameEntities
 
             this.content = content;
 
-            this.pathPrefixes = dictionary.figurePrefixes;
-            this.texturePaths = dictionary.figureTexturePaths[figureType];
-            this.animationPaths = dictionary.figureAnimationPaths[figureType];
-            this.effectsPaths = dictionary.effectsPaths;
+            this.pathPrefixes = paths.figurePrefixes;
+            this.texturePaths = paths.figureTexturePaths[figureType];
+            this.animationPaths = paths.figureAnimationPaths[figureType];
+            this.effectsPaths = paths.effectsPaths;
 
             this.sprite = new Sprite(pathPrefixes[0] + texturePaths[0], position, content);
             this.texture = sprite.texture;
 
-            states = new List<State>();
-            threadUnsafeAnimation = new List<animationState>();
+            animationStates = new List<animationState>();
+            figureStates = new List<State>();
+
             Falldown();
         }
 
-        public Figure(Vector2 position, Vector2[] bounds, int type, Field.Paths dictionary, ContentManager content) //creating figure from another one
+        public Figure(int horizontalPos, int verticalPos, int type, float offset, Vector2 fieldBounds, Paths paths, ContentManager content)
+        {
+            position = new Vector2(
+                         fieldBounds.X + horizontalPos * offset + horizontalPos * FIGURESIZE + offset,
+                         fieldBounds.Y + verticalPos * offset + verticalPos * FIGURESIZE + offset
+                         );
+
+            //figure bounds
+            bounds = new Vector2[4]
+            {
+                        position,
+                        new Vector2(position.X + FIGURESIZE, position.Y),
+                        new Vector2(position.X, position.Y + FIGURESIZE),
+                        new Vector2(position.X + FIGURESIZE, position.Y + FIGURESIZE)
+            };
+
+            figureType = type;
+
+            this.content = content;
+            this.pathPrefixes = paths.figurePrefixes;
+            this.texturePaths = paths.figureTexturePaths[figureType];
+            this.animationPaths = paths.figureAnimationPaths[figureType];
+            this.effectsPaths = paths.effectsPaths;
+
+            this.sprite = new Sprite(pathPrefixes[0] + texturePaths[0], position, content);
+            this.texture = sprite.texture;
+
+            animationStates = new List<animationState>();
+            figureStates = new List<State>();
+
+            Falldown();
+        }
+
+        public Figure(Vector2 position, Vector2[] bounds, int type, Paths paths, ContentManager content) //creating figure at position
         {
             this.position = position;
             this.bounds = bounds;
@@ -128,52 +161,34 @@ namespace Match3.GameEntities
 
             this.content = content;
 
-            this.pathPrefixes = dictionary.figurePrefixes;
-            this.texturePaths = dictionary.figureTexturePaths[figureType];
-            this.animationPaths = dictionary.figureAnimationPaths[figureType];
-            this.effectsPaths = dictionary.effectsPaths;
+            this.pathPrefixes = paths.figurePrefixes;
+            this.texturePaths = paths.figureTexturePaths[figureType];
+            this.animationPaths = paths.figureAnimationPaths[figureType];
+            this.effectsPaths = paths.effectsPaths;
 
             this.sprite = new Sprite(pathPrefixes[0] + texturePaths[0], position, content);
             this.texture = sprite.texture;
 
-            states = new List<State>();
-            threadUnsafeAnimation = new List<animationState>();
+            animationStates = new List<animationState>();
+            figureStates = new List<State>();
             Falldown();
         }
 
         public void Falldown()
         {
+            //Console.WriteLine(position);
             for (int i = 200; i > -10;)
             {
-                threadUnsafeAnimation.Add(new animationState() { position = this.position - new Vector2(0, i) });
+                animationStates.Add(new animationState() { position = this.position - new Vector2(0, i) });
                 i = i - 10;
             }
-        }
-
-        public Figure(Vector2 position, Vector2[] bounds, int type, string[] prefixes, string[] texturePaths, string[] animationPaths, string[] effectsPaths, ContentManager content)
-        {
-            this.position = position;
-            this.bounds = bounds;
-            this.figureType = type;
-
-            this.content = content;
-
-            this.pathPrefixes = prefixes;
-            this.texturePaths = texturePaths;
-            this.animationPaths = animationPaths;
-            this.effectsPaths = effectsPaths;
-
-            this.sprite = new Sprite(pathPrefixes[0] + texturePaths[0], position, content);
-            this.texture = sprite.texture;
-
-            states = new List<State>();
-            threadUnsafeAnimation = new List<animationState>();
-            Falldown();
+           //foreach (FigureState animation in animationStates)
+                //Console.WriteLine(animation.position);
         }
 
         public bool IsBusy()
         {
-            if (threadUnsafeAnimation.Count != 0)
+            if (animationStates.Count > 0)
                 return true;
 
             return false;
@@ -181,81 +196,153 @@ namespace Match3.GameEntities
 
         public void Change(Figure next)
         {
-            states.Add(new State {position = next.position, bounds = next.bounds});
-
-            Console.WriteLine(states[0].type + "DSDSDSDAD");
+            figureStates.Add(new State() { texturePaths = next.texturePaths, animationPaths = next.animationPaths, effectsPaths = next.effectsPaths, type = next.figureType, subType = next.subType});
+            //changeStates.Add(new FigureState(next));
+            //animationStates.Add(new FigureState());
         }
 
-        public void ChangePosition(Figure next)
+        public void Move(Figure next)
         {
+            var swapAnimation = new List<animationState>();
+            int seed = 0;
+            int deltaX = (int)(position.X - next.position.X);
+
+            if (deltaX > 0)
+                seed = 1;
+
+            if (deltaX < 0)
+                seed = 2;
+
+            int deltaY = (int)(position.Y - next.position.Y);
+
+            if (deltaY > 0)
+                seed = 3;
+
+            if (deltaY < 0)
+                seed = 4;
+
+            //Console.WriteLine(deltaX.ToString());
+
+            switch (seed)
+            {
+                case 1:
+                    for (int i = 0; i < deltaX + 1; )
+                    {
+                        Vector2 pos = next.position + new Vector2(i, 0);
+                        swapAnimation.Add(new animationState() {position = pos, texturePaths = next.texturePaths, animationPaths = next.animationPaths, effectsPaths = next.effectsPaths});
+                        i = i + 1;
+                    }
+                    break;
+                case 2:
+                    for (int i = 0; i < Math.Abs(deltaX) + 1;)
+                    {
+                        Vector2 pos = next.position - new Vector2(i, 0);
+                        swapAnimation.Add(new animationState() { position = pos, texturePaths = next.texturePaths, animationPaths = next.animationPaths, effectsPaths = next.effectsPaths });
+                        i = i + 1;
+                    }
+                    break;
+                case 3:
+                    for (int i = 0; i < deltaY + 1; )
+                    {
+                        Vector2 pos = next.position + new Vector2(0, i);
+                        swapAnimation.Add(new animationState() { position = pos, texturePaths = next.texturePaths, animationPaths = next.animationPaths, effectsPaths = next.effectsPaths });
+                        i = i + 1;
+                    }
+                    break;
+                case 4:
+                    for (int i = 0; i < Math.Abs(deltaY) + 1;)
+                    {
+                        Vector2 pos = next.position - new Vector2(0, i);
+                        swapAnimation.Add(new animationState() { position = pos, texturePaths = next.texturePaths, animationPaths = next.animationPaths, effectsPaths = next.effectsPaths });
+                        i = i + 1;
+                    }
+                    break;
+            }
+
+            SkipFrames(swapAnimation);
+
+            foreach (var animation in swapAnimation)
+                animationStates.Add(animation);
+
+            Change(next);
+        }
 
 
 
+        private void SkipFrames(List <animationState> animation)
+        {
+            for (int i = 0; i < animation.Count-5;)
+            {
+                animation.RemoveAt(i);
+                i = i + 5;
+            }
+        }
+
+        public void Swap(Figure swapped, int i1, int j1, int i2, int j2)
+        {
+            if ((Math.Abs(i1 - i2) >= 1) && (Math.Abs(j1 - j2) >= 1))
+                return;
+
+            Move(swapped);
         }
 
         public void Update()
         {
-
-            if (states.Count != 0)
+            if (figureStates.Count != 0)
             {
-                Console.WriteLine(states[0].type + "DSDSDSDAD");
-
-
-                /*
-                figureType = states[0].type;
-
-                texturePaths = states[0].texturePaths;
-
-                animationPaths = states[0].animationPaths;
-
-                effectsPaths = states[0].effectsPaths;
-                */
-                position = states[0].position;
-                bounds = states[0].bounds;
+                figureType = figureStates[0].type;
+                subType = figureStates[0].subType;
+                texturePaths = figureStates[0].texturePaths;
+                animationPaths = figureStates[0].animationPaths;
+                effectsPaths = figureStates[0].effectsPaths;
+                figureStates.RemoveAt(0);
             }
 
-            Animate();
-            //texture = content.Load<Texture2D>(pathPrefixes[0] + texturePaths[0]);
+            if (IsBusy())
+                return;
+        }
+
+        public void Input(MouseState current, MouseState previous)
+        {
+            previousMouseState = previous;
+
+            currentMouseState = current;
+
+            //Console.WriteLine(new Vector2(mouseState.X, mouseState.Y));
+
+            if (
+                (currentMouseState.LeftButton == ButtonState.Pressed)
+                &&
+                (previousMouseState.LeftButton == ButtonState.Released)
+                )
+            {
+                if (
+                    (currentMouseState.X >= bounds[0].X) && (currentMouseState.X <= bounds[1].X)
+                    &&
+                    (currentMouseState.Y >= bounds[0].Y) && (currentMouseState.Y <= bounds[3].Y)
+                    )
+                    click.Invoke(this, new EventArgs());
+            }
         }
 
         public void PostUpdate()
         {
-            ReAnimate();
-
-            if (states.Count != 0)
-            {
-                sprite = new Sprite(pathPrefixes[0] + texturePaths[0], position, content);
-                states.RemoveAt(0);
-            }
-
-         /*   if (nextAnimationStates.Count != 0)
-            {
-                sprite = new Sprite(pathPrefixes[0] + texturePaths[0], position, content);
-                nextAnimationStates.RemoveAt(0);
-            }
-         */
+            Animate();
         }
 
         public void Animate()
         {
-            if (threadUnsafeAnimation.Count == 0)
+            if (animationStates.Count > 0)
+            {
+                if (animationStates[0].texturePaths != null)
+                    sprite = new Sprite(pathPrefixes[0] + animationStates[0].texturePaths[0], animationStates[0].position, content);
+                else
+                    sprite = new Sprite(pathPrefixes[0] + texturePaths[0], animationStates[0].position, content);
+
+                animationStates.RemoveAt(0);
                 return;
-            
-            stateOfAnimation += 1;
-
-            if (stateOfAnimation % ANIMATIONTIME == 0)
-            {
-                position = threadUnsafeAnimation[0].position;
             }
-        }
-
-        public void ReAnimate()
-        {
-            if ((stateOfAnimation % ANIMATIONTIME == 0) && (threadUnsafeAnimation.Count != 0))
-            {
-                sprite = new Sprite(pathPrefixes[0] + texturePaths[0], position, content);
-                threadUnsafeAnimation.RemoveAt(0);
-            }
+            sprite = new Sprite(pathPrefixes[0] + texturePaths[0], position, content);
         }
 
         public void Draw(SpriteBatch spritebatch)
@@ -266,7 +353,7 @@ namespace Match3.GameEntities
         public void Next()
         {
             state += 1;
-            this.texture = animationset[(state/stateByTime) % MAX_STATES];
+            //this.texture = animationset[(state/stateByTime) % MAX_STATES];
         }
 
         public void FigureSelect()
@@ -287,25 +374,25 @@ namespace Match3.GameEntities
         public void FigureDestroyDown()
         {
             this.isDestroyed = true;
-            this.texture = effectsset[1];
+            //this.texture = effectsset[1];
         }
 
         public void FigureDestroyLeft()
         {
             this.isDestroyed = true;
-            this.texture = effectsset[2];
+            //this.texture = effectsset[2];
         }
 
         public void FigureDestroyRight()
         {
             this.isDestroyed = true;
-            this.texture = effectsset[3];
+            //this.texture = effectsset[3];
         }
 
         public void FigureDestroyUp()
         {
             this.isDestroyed = true;
-            this.texture = effectsset[4];
+            //this.texture = effectsset[4];
         }
 
         public int FigureAnimate()            //some animations may require completion
@@ -313,14 +400,14 @@ namespace Match3.GameEntities
             if (this.isSelected == true)
             {
                 state = state + 1;
-                this.texture = animationset[(state / stateByTime) % MAX_STATES];
+                //this.texture = animationset[(state / stateByTime) % MAX_STATES];
                 return 1;
             }
 
             if (this.isBlownUp == true)
             {
                 this.isBlownUp = false;
-                this.texture = effectsset[0];
+                //this.texture = effectsset[0];
                 return 2;       
             }
 
