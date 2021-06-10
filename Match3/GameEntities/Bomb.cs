@@ -10,7 +10,7 @@ using Match3.ScreenEntities;
 
 namespace Match3.GameEntities
 {
-    class Figure:ICloneable
+    class Bomb : Figure
     {
         public ContentManager content;
 
@@ -83,10 +83,6 @@ namespace Match3.GameEntities
         public int subType;
 
         const int MAX_STATES = 3;
-        public void Bomb()
-        {
-
-        }
 
         public void HorizontalDestroyer()
         {
@@ -98,7 +94,7 @@ namespace Match3.GameEntities
 
         }
 
-        public Figure(Figure figure, int newType, Paths paths, ContentManager content) //creating new figure from another one
+        public Bomb(Figure figure, int newType, Paths paths, ContentManager content):base(figure, newType, paths, content) //creating new figure from another one
         {
             position = figure.position;
             bounds = figure.bounds;
@@ -120,7 +116,7 @@ namespace Match3.GameEntities
             Falldown();
         }
 
-        public Figure(int horizontalPos, int verticalPos, int type, float offset, Vector2 fieldBounds, Paths paths, ContentManager content)
+        public Bomb(int horizontalPos, int verticalPos, int type, float offset, Vector2 fieldBounds, Paths paths, ContentManager content) : base(horizontalPos, verticalPos, type, offset, fieldBounds , paths, content)
         {
             position = new Vector2(
                          fieldBounds.X + horizontalPos * offset + horizontalPos * FIGURESIZE + offset,
@@ -153,7 +149,7 @@ namespace Match3.GameEntities
             Falldown();
         }
 
-        public Figure(Vector2 position, Vector2[] bounds, int type, Paths paths, ContentManager content) //creating figure at position
+        public Bomb(Vector2 position, Vector2[] bounds, int type, Paths paths, ContentManager content): base(position, bounds, type, paths, content) //creating figure at position
         {
             this.position = position;
             this.bounds = bounds;
@@ -192,34 +188,6 @@ namespace Match3.GameEntities
                 return true;
 
             return false;
-        }
-
-        public void Blast()
-        {
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-        }
-
-        public void NewFigure(Figure next)
-        {
-
         }
 
         public void Change(Figure next)
@@ -308,13 +276,7 @@ namespace Match3.GameEntities
 
         public void Swap(Figure swapped, int i1, int j1, int i2, int j2)
         {
-            if (Math.Abs(i1 - i2) > 1)
-                return;
-
-            if (Math.Abs(j1 - j2) > 1)
-                return;
-
-            if ((Math.Abs(j1 - j2) == 1) && (Math.Abs(i1 - i2) == 1))
+            if ((Math.Abs(i1 - i2) >= 1) && (Math.Abs(j1 - j2) >= 1))
                 return;
 
             Move(swapped);
@@ -364,25 +326,10 @@ namespace Match3.GameEntities
             Animate();
         }
 
-        public void SwapBlast()
-        {
-
-        }
-
-
         public void Animate()
         {
             if (animationStates.Count > 0)
             {
-                /*
-                if (animationStates[0].effectsPaths != null)
-                {
-                    sprite = new Sprite(pathPrefixes[1] + animationStates[0].effectsPaths[0], position, content);
-                    animationStates.RemoveAt(0);
-                    return;
-                }
-                */
-
                 if (animationStates[0].texturePaths != null)
                     sprite = new Sprite(pathPrefixes[0] + animationStates[0].texturePaths[0], animationStates[0].position, content);
                 else

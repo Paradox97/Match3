@@ -28,7 +28,7 @@ namespace Match3.States
             //for resize purposes, resize later
             float fieldHeight = 450, fieldWidth = 450, fieldOffset = 5f;
 
-            float heightOffset = (game.Window.ClientBounds.Height - fieldOffset) - fieldHeight;         
+            float heightOffset = (game.Window.ClientBounds.Height) - fieldHeight;         
             float widthOffset =  (game.Window.ClientBounds.Height - fieldOffset) - fieldHeight;
 
             float figureSize = 50;
