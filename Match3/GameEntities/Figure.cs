@@ -80,22 +80,6 @@ namespace Match3.GameEntities
 
         public int subType;
 
-        const int MAX_STATES = 3;
-        public void Bomb()
-        {
-
-        }
-
-        public void HorizontalDestroyer()
-        {
-
-        }
-
-        public void VerticalDestroyer()
-        {
-
-        }
-
         public Figure(Figure figure, int newType, Paths paths, ContentManager content) //creating new figure from another one
         {
             position = figure.position;
@@ -201,13 +185,21 @@ namespace Match3.GameEntities
         public void Falldown()
         {
             //Console.WriteLine(position);
-            for (int i = 200; i > -10;)
+            for (int i = 200; i > -5;)
             {
                 animationStates.Add(new animationState() { position = this.position - new Vector2(0, i) });
-                i = i - 10;
+                i = i - 5;
             }
            //foreach (FigureState animation in animationStates)
                 //Console.WriteLine(animation.position);
+        }
+
+        public void AwaitFalldown()
+        {
+            for (int i = 0; i < 46; i++)
+            {
+                animationStates.Add(new animationState { texturePaths = texturePaths, position = position, animationPaths = animationPaths });
+            }
         }
 
         public bool IsBusy()

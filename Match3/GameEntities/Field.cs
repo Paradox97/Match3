@@ -1,22 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
-using System.Diagnostics;
-
-
-using System.Timers;
-using System.Threading.Tasks;
-using System.Threading;
-using System.Collections;
-using System.IO;
-using Match3.Controls;
-using Match3.GameEntities;
-using Match3.ScreenEntities;
-
 using System.Linq;
 
 namespace Match3.GameEntities
@@ -44,7 +31,6 @@ namespace Match3.GameEntities
         }
 
         ContentManager content;
-
         public enum FieldTypes
         {
             field_1 = 0
@@ -62,6 +48,8 @@ namespace Match3.GameEntities
         public float 
             figureOffset, figureSize;
 
+        public float
+            fieldOffset;
         public int score { get; set; }
 
         public int[] 
@@ -80,22 +68,6 @@ namespace Match3.GameEntities
             }
         }
 
-        public struct Bonus
-        {
-            public int i;
-            public int j;
-            public int subType;
-
-            public Bonus(int hor, int vert, int type)
-            {
-                i = hor;
-                j = vert;
-                subType = type;
-            }
-        }
-
-        public List<Match> matches;
-
         public string[][]
             figureTexturePaths,
             figureAnimationPaths;
@@ -104,9 +76,134 @@ namespace Match3.GameEntities
 
         public string[] effectsPaths;
 
-        //public Texture2D self;          //field texture
-
         public Sprite self;
+
+        public Field(float heightOffset, float[] fieldDimensions, ContentManager content, string[] pathPrefixes)
+        {
+            this.content = content;
+            prefix = pathPrefixes[0];
+            figurePrefixes = new string[2] { pathPrefixes[1], pathPrefixes[2] };
+            figureOffset = 5f;
+            fieldOffset = 5f;
+
+            FieldTypes[] fields = ((FieldTypes[])Enum.GetValues(typeof(FieldTypes)));
+            path = fields[new Random().Next(0, fields.Length)].ToString();
+
+            bounds = new Vector2[4]
+            {
+                new Vector2(fieldOffset, heightOffset),                                                        //topleft
+                new Vector2(fieldOffset + fieldDimensions[0], heightOffset),                               //topright
+                new Vector2(fieldOffset, heightOffset + fieldDimensions[1]),                               //bottomleft
+                new Vector2(fieldOffset + fieldDimensions[0], heightOffset + fieldDimensions[1])       //bottomright
+            };
+
+            self = new Sprite(prefix + path, bounds[0], content);
+
+            figureSize = 50;
+
+            #region figure textures
+            figureTexturePaths = new string[5][];
+
+            figureTexturePaths[0] = new string[4]
+            {
+                "circle/circle",
+                "circle/circle_linehor",
+                "circle/circle_linevert",
+                "circle/circle_bomb"
+            };
+
+            figureTexturePaths[1] = new string[4]
+            {
+                "crystall/crystall",
+                "crystall_linehor",
+                "crystall_linevert",
+                "crystall/crystall_bomb"
+            };
+
+            figureTexturePaths[2] = new string[4]
+            {
+                "heart/heart",
+                "heart/heart_linehor",
+                "heart/heart_linevert",
+                "heart/heart_bomb"
+            };
+
+            figureTexturePaths[3] = new string[4]
+            {
+                "pyramid/pyramid",
+                "pyramid/pyramid_linehor",
+                "pyramid/pyramid_linevert",
+                "pyramid/pyramid_bomb"
+            };
+
+            figureTexturePaths[4] = new string[4]
+            {
+                "square/square",
+                "square/square_linehor",
+                "square/square_linevert",
+                "square/square_bomb"
+            };
+            #endregion
+
+            #region figure animation
+
+            this.figureAnimationPaths = new string[5][];
+
+            this.figureAnimationPaths[0] = new string[3]
+            {
+                "circle/circle_shine1",
+                "circle/circle_shine2",
+                "circle/circle_shine3"
+            };
+
+            this.figureAnimationPaths[1] = new string[3]
+            {
+                "crystall/crystall_shine1",
+                "crystall/crystall_shine2",
+                "crystall/crystall_shine3"
+            };
+
+            this.figureAnimationPaths[2] = new string[3]
+            {
+                "heart/heart_shine1",
+                "heart/heart_shine2",
+                "heart/heart_shine3"
+            };
+
+            this.figureAnimationPaths[3] = new string[3]
+            {
+                "pyramid/pyramid_shine1",
+                "pyramid/pyramid_shine2",
+                "pyramid/pyramid_shine3"
+            };
+
+            this.figureAnimationPaths[4] = new string[3]
+            {
+                "square/square_shine1",
+                "square/square_shine2",
+                "square/square_shine3"
+            };
+            #endregion
+
+            #region effects
+
+            this.effectsPaths = new string[5] {
+                "blast",
+                "destroyer_down",
+                "destroyer_left",
+                "destroyer_right",
+                "destroyer_up"
+                    };
+            #endregion
+
+            paths = new Paths(figurePrefixes, figureTexturePaths, figureAnimationPaths, effectsPaths);
+
+            this.field = new Figure[FIELD_SIZE_HORIZONTAL, FIELD_SIZE_VERTICAL];
+            Create();
+        }
+
+
+
 
         public Field(float figureSize, float offset, Vector2[] bounds, ContentManager content, string[] pathPrefixes)
         {
@@ -252,8 +349,8 @@ namespace Match3.GameEntities
             {
                 for (int j = 0; j < 8; j++)
                 {
-                    Figure figure = new Figure(i, j, RandomType(), figureOffset ,bounds[0], paths, content); 
-                    this.field[i, j] = figure;
+                    Figure figure = new Figure(i, j, RandomType(), figureOffset , bounds[0], paths, content); 
+                    this.field[j, i] = figure;
                 }
             }
 
@@ -266,6 +363,8 @@ namespace Match3.GameEntities
                     Shuffle(i, j);
                 }
             }
+
+
 
         }
 
@@ -280,7 +379,7 @@ namespace Match3.GameEntities
                     field[i, j].Draw(spriteBatch);
                 }
             }
-            //Draw();
+            Draw();
         }
 
         public int[] FieldLocate(Vector2 position)       //field position by cursor position
@@ -324,23 +423,17 @@ namespace Match3.GameEntities
                 )
             {
                 previousFigure = currentFigure;
-
                 currentFigure = FieldLocate(new Vector2(current.X, current.Y));
                 
                 if (previousFigure != null)
                 {
                     Swap(currentFigure[0], currentFigure[1], previousFigure[0], previousFigure[1]);
-
-                    
-                    /*if ((currentFigure[0] == previousFigure[0])&&(currentFigure[1] == previousFigure[1]))
-                    {
-                        //Console.WriteLine("No Swap");
-                    }*/
                     previousFigure = null;
                     currentFigure = null;
                 }
             }
         }
+
         public void GenerateByDifficulty(int difficultySeed)
         {
             Random random = new Random();
@@ -455,6 +548,7 @@ namespace Match3.GameEntities
                 return;
 
             bool isMatch = false;
+            bool isWaiting = false;
 
             field[i2, j2].Swap(field[i1, j1], i2, j2, i1, j1);
             field[i1, j1].Swap(field[i2, j2], i1, j1, i2, j2);
@@ -462,87 +556,84 @@ namespace Match3.GameEntities
             field[i2, j2].Update();
             field[i1, j1].Update();
 
-            if (IsMatch(i1, j1))
+            if (IsMatch(i1, j1) || IsMatch(i2, j2))
             {
-                isMatch = true;
-                List<Match> Matches = WhereMatch(i1, j1);
-
-                //field[i1, j1].Blast();
-                //field[i1, j1] = new Figure(field[i1, j1], RandomType(), field[i1, j1].animationStates, paths, content);
-
-                foreach (var m in Matches)
+                for (int i = 0; i < FIELD_SIZE_HORIZONTAL; i++)
                 {
-                    if ((m.i == i1) && (m.j == j1))
-                    field[m.i, m.j].Blast();
-                    else
+                    for (int j = 0; j < FIELD_SIZE_VERTICAL; j++)
                     {
-                        field[m.i, m.j].AwaitSwap();
+                        if ((i == i1) && (j == j1))
+                        {
+                            //Console.WriteLine("hui");
+                        }
+                        else
+                        {
+                            if ((i == i2) && (j == j2))
+                            {
+                                //Console.WriteLine("hui");
+                            }
+                            else
+                                field[i, j].AwaitSwap();
+                        }
                     }
+                }
+
+
+                List<Match> matches = WhereMatch(i1, j1);
+
+                foreach (var m in WhereMatch(i2, j2))
+                    matches.Add(m);
+
+                foreach(var m in matches)
+                {
+                    field[m.i, m.j].Blast();
                     field[m.i, m.j] = new Figure(field[m.i, m.j], RandomType(), field[m.i, m.j].animationStates, paths, content);
                 }
 
-                foreach (var m in Matches)
-                {
-                    if (IsMatch(m.i, m.j))
-                        Blast(m.i, m.j);
-                }
- 
-            }
+                Finalize(matches);
 
-            if (IsMatch(i2, j2))
-            {
-                isMatch = true;
-                List<Match> Matches = WhereMatch(i2, j2);
-
-                //field[i2, j2].Blast();
-                //field[i2, j2] = new Figure(field[i2, j2], RandomType(), field[i2, j2].animationStates, paths, content);
-
-                foreach (var m in Matches)
-                {
-                    if ((m.i == i2) && (m.j == j2))
-                    field[m.i, m.j].Blast();
-                    else
-                    {
-                        field[m.i, m.j].AwaitSwap();
-                        field[m.i, m.j].Blast();
-                    }
-                    field[m.i, m.j] = new Figure(field[m.i, m.j], RandomType(), field[m.i, m.j].animationStates, paths, content);
-                }
-
-
-                foreach (var m in Matches)
-                 {
-                    if (IsMatch(m.i, m.j))
-                        Blast(m.i, m.j);
-                 }
-
-            }
-
-            if (isMatch == true)
                 return;
+            }
 
             field[i2, j2].Swap(field[i1, j1], i2, j2, i1, j1);
             field[i1, j1].Swap(field[i2, j2], i1, j1, i2, j2);
         }
 
-        public void Blast(int i, int j)
+        public void Finalize(List<Match> matches)
         {
-            List<Match> Matches = WhereMatch(i, j);
+            List<Match> matches1 = new List<Match>();
+            bool AreMatches = false;
+            
+            foreach (var m in matches)
+                 {
+                    if (IsMatch(m.i, m.j))
+                        {
+                            AreMatches = true;
+                            foreach(var n in WhereMatch(m.i, m.j))
+                                {
+                                    matches1.Add(n);
+                                }
+                        } 
+                 }
 
-            foreach (var m in Matches)
+            for (int i = 0; i < FIELD_SIZE_HORIZONTAL; i++)
             {
-                field[m.i, m.j].AwaitSwap();
-                field[m.i, m.j].Blast();
-                field[m.i, m.j] = new Figure(field[m.i, m.j], RandomType(), field[m.i, m.j].animationStates, paths, content);
-            }
-
-            foreach (var m in Matches)
-            {
-                if (IsMatch(m.i, m.j))
+                for (int j = 0; j < FIELD_SIZE_VERTICAL; j++)
                 {
-                    Blast(m.i, m.j);
+                    if (matches1.Contains(new Match(i, j)))
+                    {
+                        field[i, j].Blast();
+                        field[i, j] = new Figure(field[i, j], RandomType(), field[i, j].animationStates, paths, content);
+                    }
+                    else
+                        field[i, j].AwaitFalldown();
                 }
             }
+
+            if (AreMatches == false)
+                return;
+
+            Finalize(matches1);
 
         }
 
@@ -603,7 +694,7 @@ namespace Match3.GameEntities
 
             int type = field[i, j].figureType;
             int notmatch = NotType(type);
-            matches = WhereMatch(i, j);
+            List<Match> matches = WhereMatch(i, j);
             Random rand = new Random();
             int random = 0;
             int k, g;
@@ -618,13 +709,12 @@ namespace Match3.GameEntities
                 g = matches[random].j;
 
                 field[k, g] = new Figure(field[k,g], notmatch, paths, content);
-                //field[k, g].Update();
+
 
                 while (IsMatch(k, g))
                         {
                             notmatch = NotType(type);
                             field[k, g] = new Figure(field[k, g], notmatch, paths, content);
-                            //field[k, g].Update();
                         }
             }
         }
@@ -785,13 +875,6 @@ namespace Match3.GameEntities
             UpdateFigures();
         }
 
-        public int[] ConsoleDebug(int i)
-        {
-            int hor = i / 8;
-            int vert = i % 8;
-            return new int[2] { hor, vert };
-        }
-
         public void Draw()      //debug
         {
             Console.SetCursorPosition(0, 0);
@@ -802,7 +885,7 @@ namespace Match3.GameEntities
             {
                 for (int j = 0; j < FIELD_SIZE_VERTICAL; j++)
                 {
-                    output += this.field[j, i].figureType;
+                    output += this.field[i, j].figureType;
                 }
                 output += "|\n";
             }

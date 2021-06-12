@@ -26,25 +26,11 @@ namespace Match3.States
             this.screenContent = new List<ScreenContent>() { match3Text, classicText };
 
             //for resize purposes, resize later
-            float fieldHeight = 450, fieldWidth = 450, fieldOffset = 5f;
+            float[] fieldDimensions = new float[2] { 450, 450 };
+            float heightOffset = (game.Window.ClientBounds.Height) - fieldDimensions[1];         
+            string[] pathPrefixes = new string[3] { "fields/", "textures/", "effects/"};
 
-            float heightOffset = (game.Window.ClientBounds.Height) - fieldHeight;         
-            float widthOffset =  (game.Window.ClientBounds.Height - fieldOffset) - fieldHeight;
-
-            float figureSize = 50;
-
-            string[] texturePathPrefixes = new string[3] { "fields/", "textures/", "effects/"};
-
-            Vector2[] fieldBounds = new Vector2[4]
-            {
-                new Vector2(fieldOffset, heightOffset),                                                        //topleft
-                new Vector2(fieldOffset + fieldWidth, heightOffset),                               //topright
-                new Vector2(fieldOffset, heightOffset + fieldHeight),                               //bottomleft
-                new Vector2(fieldOffset + fieldWidth, heightOffset + fieldHeight)       //bottomright
-            };
-
-            this.field = new Field(figureSize, fieldOffset, fieldBounds, content, texturePathPrefixes);
-
+            field = new Field(heightOffset, fieldDimensions, content, pathPrefixes);
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

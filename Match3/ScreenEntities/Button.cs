@@ -18,26 +18,23 @@ namespace Match3.ScreenEntities
 
         public Button(Texture2D texture, Vector2 position) : base(texture, position)
         {
-            this.Scale = 0.7f;
-            this.rotation = 0f;
-            this.origin = new Vector2(0, 0);
+            Scale = 0.7f;
+            rotation = 0f;
+            origin = new Vector2(0, 0);
 
 
-            this.bounds = new Vector2[4];
-
-            this.bounds[0] = position;
-            this.bounds[1] = new Vector2(position.X + texture.Width*Scale, position.Y);
-            this.bounds[2] = new Vector2(position.X, position.Y + texture.Height*Scale);
-            this.bounds[3] = new Vector2(position.X + texture.Width*Scale, position.Y + texture.Height*Scale);
+            bounds = new Vector2[4] { 
+                position, 
+                new Vector2(position.X + texture.Width * Scale, position.Y), 
+                new Vector2(position.X, position.Y + texture.Height * Scale), 
+                new Vector2(position.X + texture.Width * Scale, position.Y + texture.Height * Scale) 
+            };
         }
 
         public override void Update(MouseState current, MouseState previous)
         {
             previousMouseState = previous;
-
             currentMouseState = current;
-
-            //Console.WriteLine(new Vector2(mouseState.X, mouseState.Y));
 
             if (
                 (currentMouseState.LeftButton == ButtonState.Pressed)
@@ -54,5 +51,6 @@ namespace Match3.ScreenEntities
             }
 
         }
+
     }
 }

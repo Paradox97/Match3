@@ -17,18 +17,6 @@ namespace Match3
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
-        public Texture2D[][]
-            textTextures,
-            buttonTextures,
-            figureTextures,
-            figureAnimationTextures;
-
-        public Texture2D[]
-            effectsTextures,
-            fieldTextures;
-
-        Field field;
-
         private Screen currentScreen,
             nextScreen;
 
@@ -37,7 +25,6 @@ namespace Match3
 
         private KeyboardState currentKeyboardState,
             previousKeyboardState;
-
 
         public int score;
 
@@ -56,7 +43,6 @@ namespace Match3
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
             IsMouseVisible = true;
             graphics.PreferredBackBufferWidth = 455;  // set this value to the desired width of your window
             graphics.PreferredBackBufferHeight = 625;   // set this value to the desired height of your window
