@@ -10,7 +10,7 @@ using Match3.ScreenEntities;
 
 namespace Match3.GameEntities
 {
-    class Figure:ICloneable
+    class Figure
     {
         public ContentManager content;
 
@@ -44,12 +44,10 @@ namespace Match3.GameEntities
 
         public bool
             isSelected,
-            isDragged,
             isBlownUp,
-            isFalling,
             isDestroyed;
 
-        private struct State
+        public struct State
         {
             public string[] texturePaths;
 
@@ -62,7 +60,7 @@ namespace Match3.GameEntities
             public int subType;
         }
 
-        private struct animationState
+        public struct animationState
         {
             public Vector2 position;
 
@@ -77,7 +75,7 @@ namespace Match3.GameEntities
             previousMouseState;
 
 
-        private List<animationState> animationStates;
+        public List<animationState> animationStates;
         private List<State> figureStates;
 
         public int subType;
@@ -115,6 +113,32 @@ namespace Match3.GameEntities
             this.texture = sprite.texture;
 
             animationStates = new List<animationState>();
+            figureStates = new List<State>();
+
+            Falldown();
+        }
+
+        public Figure(Figure figure, int newType, List<animationState> animationstates, Paths paths, ContentManager content) //creating new figure from another one
+        {
+            position = figure.position;
+            bounds = figure.bounds;
+            figureType = newType;
+
+            this.content = content;
+
+            this.pathPrefixes = paths.figurePrefixes;
+            this.texturePaths = paths.figureTexturePaths[figureType];
+            this.animationPaths = paths.figureAnimationPaths[figureType];
+            this.effectsPaths = paths.effectsPaths;
+
+            this.sprite = new Sprite(pathPrefixes[0] + texturePaths[0], position, content);
+            this.texture = sprite.texture;
+
+            animationStates = new List<animationState>();
+
+            foreach (var a in animationstates)
+                this.animationStates.Add(a);
+
             figureStates = new List<State>();
 
             Falldown();
@@ -201,20 +225,6 @@ namespace Match3.GameEntities
             animationStates.Add(new animationState() { effectsPaths = effectsPaths });
             animationStates.Add(new animationState() { effectsPaths = effectsPaths });
             animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
-            animationStates.Add(new animationState() { effectsPaths = effectsPaths });
         }
 
         public void NewFigure(Figure next)
@@ -225,8 +235,6 @@ namespace Match3.GameEntities
         public void Change(Figure next)
         {
             figureStates.Add(new State() { texturePaths = next.texturePaths, animationPaths = next.animationPaths, effectsPaths = next.effectsPaths, type = next.figureType, subType = next.subType});
-            //changeStates.Add(new FigureState(next));
-            //animationStates.Add(new FigureState());
         }
 
         public void Move(Figure next)
@@ -257,7 +265,7 @@ namespace Match3.GameEntities
                     for (int i = 0; i < deltaX + 1; )
                     {
                         Vector2 pos = next.position + new Vector2(i, 0);
-                        swapAnimation.Add(new animationState() {position = pos, texturePaths = next.texturePaths, animationPaths = next.animationPaths, effectsPaths = next.effectsPaths});
+                        swapAnimation.Add(new animationState() {position = pos, texturePaths = next.texturePaths, animationPaths = next.animationPaths});
                         i = i + 1;
                     }
                     break;
@@ -265,7 +273,7 @@ namespace Match3.GameEntities
                     for (int i = 0; i < Math.Abs(deltaX) + 1;)
                     {
                         Vector2 pos = next.position - new Vector2(i, 0);
-                        swapAnimation.Add(new animationState() { position = pos, texturePaths = next.texturePaths, animationPaths = next.animationPaths, effectsPaths = next.effectsPaths });
+                        swapAnimation.Add(new animationState() { position = pos, texturePaths = next.texturePaths, animationPaths = next.animationPaths});
                         i = i + 1;
                     }
                     break;
@@ -273,7 +281,7 @@ namespace Match3.GameEntities
                     for (int i = 0; i < deltaY + 1; )
                     {
                         Vector2 pos = next.position + new Vector2(0, i);
-                        swapAnimation.Add(new animationState() { position = pos, texturePaths = next.texturePaths, animationPaths = next.animationPaths, effectsPaths = next.effectsPaths });
+                        swapAnimation.Add(new animationState() { position = pos, texturePaths = next.texturePaths, animationPaths = next.animationPaths});
                         i = i + 1;
                     }
                     break;
@@ -281,13 +289,14 @@ namespace Match3.GameEntities
                     for (int i = 0; i < Math.Abs(deltaY) + 1;)
                     {
                         Vector2 pos = next.position - new Vector2(0, i);
-                        swapAnimation.Add(new animationState() { position = pos, texturePaths = next.texturePaths, animationPaths = next.animationPaths, effectsPaths = next.effectsPaths });
+                        swapAnimation.Add(new animationState() { position = pos, texturePaths = next.texturePaths, animationPaths = next.animationPaths});
                         i = i + 1;
                     }
                     break;
             }
 
             SkipFrames(swapAnimation);
+            //Console.WriteLine(swapAnimation.Count);
 
             foreach (var animation in swapAnimation)
                 animationStates.Add(animation);
@@ -296,13 +305,20 @@ namespace Match3.GameEntities
         }
 
 
+        public void AwaitSwap()
+        {
+            for (int i = 0; i < 42; i++)
+            {
+                animationStates.Add(new animationState { texturePaths = texturePaths, position = position, animationPaths = animationPaths }) ;
+            }
+        }
 
         private void SkipFrames(List <animationState> animation)
         {
-            for (int i = 0; i < animation.Count-5;)
+            for (int i = 0; i < animation.Count-3;)
             {
                 animation.RemoveAt(i);
-                i = i + 5;
+                i = i + 3;
             }
         }
 
@@ -331,9 +347,6 @@ namespace Match3.GameEntities
                 effectsPaths = figureStates[0].effectsPaths;
                 figureStates.RemoveAt(0);
             }
-
-            if (IsBusy())
-                return;
         }
 
         public void Input(MouseState current, MouseState previous)
@@ -374,14 +387,12 @@ namespace Match3.GameEntities
         {
             if (animationStates.Count > 0)
             {
-                /*
                 if (animationStates[0].effectsPaths != null)
                 {
                     sprite = new Sprite(pathPrefixes[1] + animationStates[0].effectsPaths[0], position, content);
                     animationStates.RemoveAt(0);
                     return;
                 }
-                */
 
                 if (animationStates[0].texturePaths != null)
                     sprite = new Sprite(pathPrefixes[0] + animationStates[0].texturePaths[0], animationStates[0].position, content);
@@ -471,35 +482,6 @@ namespace Match3.GameEntities
 
             return 0;
         }
-
-        public object Clone()
-        {
-            return this.MemberwiseClone();
-        }
-
-        public void FigureCreateOfType(int type)
-        {
-            this.figureType = type;
-        }
-        
-        
-        public void FigureCreateNotOfType(int type)             
-        {
-            /*
-            FigureType[] figures = ((FigureType[])Enum.GetValues(typeof(FigureType)));
-
-            List<FigureType> figuresSubSet = new List<FigureType>();
-
-            for (int i = 0; i< figures.Length; i++)
-            {
-                if ((int)figures[i] != type)
-                    figuresSubSet.Add(figures[i]);
-            }
-
-            this.figureType = (int)figuresSubSet[new Random().Next(1, figuresSubSet.Count - 1)];
-            */
-        }
-       
 
     }
 }

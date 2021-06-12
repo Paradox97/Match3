@@ -252,8 +252,8 @@ namespace Match3.GameEntities
             {
                 for (int j = 0; j < 8; j++)
                 {
-                    Figure figure = new Figure(i,j, RandomType(), figureOffset ,bounds[0], paths, content); 
-                    this.field[j, i] = figure;
+                    Figure figure = new Figure(i, j, RandomType(), figureOffset ,bounds[0], paths, content); 
+                    this.field[i, j] = figure;
                 }
             }
 
@@ -280,7 +280,7 @@ namespace Match3.GameEntities
                     field[i, j].Draw(spriteBatch);
                 }
             }
-            Draw();
+            //Draw();
         }
 
         public int[] FieldLocate(Vector2 position)       //field position by cursor position
@@ -459,16 +459,63 @@ namespace Match3.GameEntities
             field[i2, j2].Swap(field[i1, j1], i2, j2, i1, j1);
             field[i1, j1].Swap(field[i2, j2], i1, j1, i2, j2);
 
-            UpdateFigures();
+            field[i2, j2].Update();
+            field[i1, j1].Update();
 
             if (IsMatch(i1, j1))
             {
                 isMatch = true;
+                List<Match> Matches = WhereMatch(i1, j1);
+
+                //field[i1, j1].Blast();
+                //field[i1, j1] = new Figure(field[i1, j1], RandomType(), field[i1, j1].animationStates, paths, content);
+
+                foreach (var m in Matches)
+                {
+                    if ((m.i == i1) && (m.j == j1))
+                    field[m.i, m.j].Blast();
+                    else
+                    {
+                        field[m.i, m.j].AwaitSwap();
+                    }
+                    field[m.i, m.j] = new Figure(field[m.i, m.j], RandomType(), field[m.i, m.j].animationStates, paths, content);
+                }
+
+                foreach (var m in Matches)
+                {
+                    if (IsMatch(m.i, m.j))
+                        Blast(m.i, m.j);
+                }
+ 
             }
 
             if (IsMatch(i2, j2))
             {
                 isMatch = true;
+                List<Match> Matches = WhereMatch(i2, j2);
+
+                //field[i2, j2].Blast();
+                //field[i2, j2] = new Figure(field[i2, j2], RandomType(), field[i2, j2].animationStates, paths, content);
+
+                foreach (var m in Matches)
+                {
+                    if ((m.i == i2) && (m.j == j2))
+                    field[m.i, m.j].Blast();
+                    else
+                    {
+                        field[m.i, m.j].AwaitSwap();
+                        field[m.i, m.j].Blast();
+                    }
+                    field[m.i, m.j] = new Figure(field[m.i, m.j], RandomType(), field[m.i, m.j].animationStates, paths, content);
+                }
+
+
+                foreach (var m in Matches)
+                 {
+                    if (IsMatch(m.i, m.j))
+                        Blast(m.i, m.j);
+                 }
+
             }
 
             if (isMatch == true)
@@ -476,6 +523,27 @@ namespace Match3.GameEntities
 
             field[i2, j2].Swap(field[i1, j1], i2, j2, i1, j1);
             field[i1, j1].Swap(field[i2, j2], i1, j1, i2, j2);
+        }
+
+        public void Blast(int i, int j)
+        {
+            List<Match> Matches = WhereMatch(i, j);
+
+            foreach (var m in Matches)
+            {
+                field[m.i, m.j].AwaitSwap();
+                field[m.i, m.j].Blast();
+                field[m.i, m.j] = new Figure(field[m.i, m.j], RandomType(), field[m.i, m.j].animationStates, paths, content);
+            }
+
+            foreach (var m in Matches)
+            {
+                if (IsMatch(m.i, m.j))
+                {
+                    Blast(m.i, m.j);
+                }
+            }
+
         }
 
         public bool IsMatch()
@@ -489,7 +557,7 @@ namespace Match3.GameEntities
 
             if (i + 2 < FIELD_SIZE_HORIZONTAL)
                     {
-                        if ((field[i + 1, j].figureType == type)&&(field[i + 2, j].figureType == type))
+                        if ((field[i + 1, j].figureType == type) && (field[i + 2, j].figureType == type))
                             return true;
                     }
 
@@ -522,7 +590,6 @@ namespace Match3.GameEntities
                         if ((field[i, j - 1].figureType == type) && (field[i, j - 2].figureType == type))
                             return true;
                     }
-            //Console.WriteLine("false");
             return false;
         }
 
@@ -551,26 +618,25 @@ namespace Match3.GameEntities
                 g = matches[random].j;
 
                 field[k, g] = new Figure(field[k,g], notmatch, paths, content);
+                //field[k, g].Update();
 
                 while (IsMatch(k, g))
                         {
                             notmatch = NotType(type);
-                            field[k,g] = new Figure(field[k,g], notmatch, paths, content);
+                            field[k, g] = new Figure(field[k, g], notmatch, paths, content);
+                            //field[k, g].Update();
                         }
             }
         }
 
-        public List<Match> WhereMatch(int i, int j) //List<Match> WhereMatch(int i, int j)
+        public List<Match> WhereMatch(int i, int j)
         {
             int type = this.field[i, j].figureType;
 
             List<Match> match = new List<Match>();
             List<Match> horizontal = new List<Match>();
             List<Match> vertical = new List<Match>();
-            List<Match> temp = new List<Match>();
-
-            horizontal.Add(new Match(i,j));
-            vertical.Add(new Match(i, j));
+            List<Match> horDistinct, vertDistinct;
 
             if (i < FIELD_SIZE_HORIZONTAL)
             {
@@ -584,7 +650,7 @@ namespace Match3.GameEntities
 
             if (i > 0)
             {
-                for (int k = i; k > 0; k--)
+                for (int k = i; k >= 0; k--)
                 {
                     if (field[k, j].figureType == type)
                         horizontal.Add(new Match(k, j));
@@ -598,43 +664,28 @@ namespace Match3.GameEntities
                 for (int k = j; k < FIELD_SIZE_HORIZONTAL; k++)
                 {
                     if (field[i, k].figureType == type)
-                        horizontal.Add(new Match(i, k));
+                        vertical.Add(new Match(i, k));
                     else break;
                 }
             }
 
             if (j > 0)
             {
-                for (int k = j; k > 0; k--)
+                for (int k = j; k >= 0; k--)
                 {
                     if (field[i, k].figureType == type)
-                        horizontal.Add(new Match(i, k));
+                        vertical.Add(new Match(i, k));
                     else break;
                 }
             }
             
             //counting horizontal Matches
-            horizontal.Distinct().ToList();
-            int count = horizontal.Count;
+            horDistinct = horizontal.Distinct().ToList();
 
-            if (count >= 3)
-                {
-                    switch (count)
-                        {
-                            case MATCH_CONDITION:
-                                break;
-                            case LINE_BONUS:
-                                break;
-                            case BOMB_BONUS:
-                                break;
-                        }
-                }
-            else
-                horizontal.Clear();
-            
-            //counting vertical Matches
-            vertical.Distinct().ToList();
-            count = vertical.Count;
+            //Console.WriteLine("__________________________");
+
+            int count = horDistinct.Count;
+            //Console.WriteLine(count);
 
             if (count >= 3)
             {
@@ -649,149 +700,43 @@ namespace Match3.GameEntities
                 }
             }
             else
-                vertical.Clear();
+            {
+                horDistinct.Clear();
+                //Console.WriteLine("correct?");
+                //Console.WriteLine(horDistinct.Count);
+                //Console.WriteLine("___________");
+            }
+            
+            //counting vertical Matches
+            vertDistinct = vertical.Distinct().ToList();
+            count = vertDistinct.Count;
 
-            foreach (var m in horizontal)
+            if (count >= 3)
+            {
+                switch (count)
+                {
+                    case MATCH_CONDITION:
+                        break;
+                    case LINE_BONUS:
+                        break;
+                    case BOMB_BONUS:
+                        break;
+                }
+            }
+            else
+                vertDistinct.Clear();
+
+            foreach (var m in horDistinct)
             {
                 match.Add(m);
             }
 
-            foreach (var m in vertical)
+            foreach (var m in vertDistinct)
             {
                 match.Add(m);
             }
 
-            match.Distinct().ToList();
-            return match;
-            /*
-            int value = this._field[i, j];
-
-            int[] bonus_values = new int[3];
-
-            bonus_values[0] = GetHorLineValue(value);
-            bonus_values[1] = GetVertLineValue(value);
-            bonus_values[2] = GetBombValue(value);
-
-
-            List<Match> Match = new List<Match>();
-
-            List<Match> Temp = new List<Match>();
-
-            Match Bonus = new Match();
-
-            List<Match> MatchTypeHor = new List<Match>();
-            List<Match> MatchTypeVert = new List<Match>();
-
-            int BombIndex = 666;
-            int horizontalIndex = 444;
-            int verticalIndex = 555;
-
-
-            if (i < FIELD_SIZE)
-            {
-                for (int k = i; k < FIELD_SIZE; k++)
-                {
-                    if ((this._field[k, j] == value) || (this._field[k, j] == bonus_values[0]) || (this._field[k, j] == bonus_values[1]) || (this._field[k, j] == bonus_values[2]))
-                        Temp.Add(new Match(k, j));
-                    else break;
-                }
-
-                foreach (Match m in Temp)
-                {
-                    Match.Add(m);
-                    MatchTypeHor.Add(m);
-                }
-
-                Temp = new List<Match>();
-            }
-
-            if (j < FIELD_SIZE)
-            {
-                for (int k = j; k < FIELD_SIZE; k++)
-                {
-                    if ((this._field[i, k] == value) || (this._field[i, k] == bonus_values[0]) || (this._field[i, k] == bonus_values[1]) || (this._field[i, k] == bonus_values[2]))
-                        Temp.Add(new Match(i, k));
-                    else break;
-                }
-
-                foreach (Match m in Temp)
-                {
-                    Match.Add(m);
-                    MatchTypeVert.Add(m);
-                }
-
-                Temp = new List<Match>();
-            }
-
-            if (i > 0)
-            {
-                for (int k = i; k > 0; k--)
-                {
-                    if ((this._field[k, j] == value) || (this._field[k, j] == bonus_values[0]) || (this._field[k, j] == bonus_values[1]) || (this._field[k, j] == bonus_values[2]))
-                        Temp.Add(new Match(k, j));
-                    else break;
-                }
-
-                foreach (Match m in Temp)
-                {
-                    Match.Add(m);
-                    MatchTypeHor.Add(m);
-                }
-
-                Temp = new List<Match>();
-            }
-
-            if (j > 0)
-            {
-                for (int k = j; k > 0; k--)
-                {
-                    if ((this._field[i, k] == value) || (this._field[i, k] == bonus_values[0]) || (this._field[i, k] == bonus_values[1]) || (this._field[i, k] == bonus_values[2]))
-                        Temp.Add(new Match(i, k));
-                    else break;
-                }
-
-                foreach (Match m in Temp)
-                {
-                    Match.Add(m);
-                    MatchTypeVert.Add(m);
-                }
-
-                Temp = new List<Match>();
-            }
-
-            List<Match> NoDuplicatesHor = MatchTypeHor.Distinct().ToList();
-            List<Match> NoDuplicatesVert = MatchTypeVert.Distinct().ToList();
-            List<Match> NoDuplicates = Match.Distinct().ToList();
-
-            if (NoDuplicatesHor.Count >= BOMB_BONUS)
-            {                                               //addding info about bonuses
-                Bonus = new Match(BombIndex, BombIndex);
-                NoDuplicates.Add(Bonus);
-                return NoDuplicates;
-            }
-
-            if (NoDuplicatesVert.Count >= BOMB_BONUS)
-            {
-                Bonus = new Match(BombIndex, BombIndex);
-                NoDuplicates.Add(Bonus);
-                return NoDuplicates;
-            }
-
-            if ((NoDuplicatesVert.Count >= LINE_BONUS) || (NoDuplicatesHor.Count >= LINE_BONUS))
-            {
-                if (NoDuplicatesVert.Count > NoDuplicatesHor.Count)
-                {
-                    Bonus = new Match(verticalIndex, verticalIndex);
-                }
-                else
-                    Bonus = new Match(horizontalIndex, horizontalIndex);
-
-                NoDuplicates.Add(Bonus);
-                return NoDuplicates;
-            }
-
-            return NoDuplicates;
-            */
+            return match.Distinct().ToList();
         }
 
 
@@ -857,7 +802,7 @@ namespace Match3.GameEntities
             {
                 for (int j = 0; j < FIELD_SIZE_VERTICAL; j++)
                 {
-                    output += this.field[i, j].figureType;
+                    output += this.field[j, i].figureType;
                 }
                 output += "|\n";
             }
