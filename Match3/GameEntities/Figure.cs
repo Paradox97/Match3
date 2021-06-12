@@ -219,11 +219,6 @@ namespace Match3.GameEntities
             animationStates.Add(new animationState() { effectsPaths = effectsPaths });
         }
 
-        public void NewFigure(Figure next)
-        {
-
-        }
-
         public void Change(Figure next)
         {
             figureStates.Add(new State() { texturePaths = next.texturePaths, animationPaths = next.animationPaths, effectsPaths = next.effectsPaths, type = next.figureType, subType = next.subType});

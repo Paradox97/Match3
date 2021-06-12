@@ -379,7 +379,7 @@ namespace Match3.GameEntities
                     field[i, j].Draw(spriteBatch);
                 }
             }
-            Draw();
+            //Draw();
         }
 
         public int[] FieldLocate(Vector2 position)       //field position by cursor position
@@ -584,7 +584,7 @@ namespace Match3.GameEntities
                 foreach (var m in WhereMatch(i2, j2))
                     matches.Add(m);
 
-                foreach(var m in matches)
+                foreach(var m in matches.Distinct().ToList())
                 {
                     field[m.i, m.j].Blast();
                     field[m.i, m.j] = new Figure(field[m.i, m.j], RandomType(), field[m.i, m.j].animationStates, paths, content);
@@ -634,6 +634,7 @@ namespace Match3.GameEntities
                 return;
 
             Finalize(matches1);
+            Console.WriteLine(matches1.Count);
 
         }
 
