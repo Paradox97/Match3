@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/Пека/source/repos/Match3/Match3/Content/textures/pyramid/pyramid_shine1.png</SourceFile>
-  <SourceTime>2021-05-04T21:27:19.5865374+10:00</SourceTime>
-  <DestFile>C:/Users/Пека/source/repos/Match3/Match3/Content/bin/DesktopGL/Content/textures/pyramid/pyramid_shine1.xnb</DestFile>
-  <DestTime>2021-05-26T20:06:29.8912013+10:00</DestTime>
+  <SourceFile>C:/Users/DeathWing/Documents/GitHub/Match3/Match3/Content/textures/pyramid/pyramid_shine1.png</SourceFile>
+  <SourceTime>2021-06-18T17:58:29.8428941+10:00</SourceTime>
+  <DestFile>C:/Users/DeathWing/Documents/GitHub/Match3/Match3/Content/bin/DesktopGL/Content/textures/pyramid/pyramid_shine1.xnb</DestFile>
+  <DestTime>2021-06-18T18:02:00.5273173+10:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2020-08-10T16:17:54+10:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

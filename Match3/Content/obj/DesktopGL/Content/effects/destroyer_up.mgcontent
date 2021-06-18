@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/Пека/source/repos/Match3/Match3/Content/effects/destroyer_up.png</SourceFile>
-  <SourceTime>2021-05-04T21:44:07.9577572+10:00</SourceTime>
-  <DestFile>C:/Users/Пека/source/repos/Match3/Match3/Content/bin/DesktopGL/Content/effects/destroyer_up.xnb</DestFile>
-  <DestTime>2021-05-26T20:06:29.7525124+10:00</DestTime>
+  <SourceFile>C:/Users/DeathWing/Documents/GitHub/Match3/Match3/Content/effects/destroyer_up.png</SourceFile>
+  <SourceTime>2021-06-18T17:58:29.5909309+10:00</SourceTime>
+  <DestFile>C:/Users/DeathWing/Documents/GitHub/Match3/Match3/Content/bin/DesktopGL/Content/effects/destroyer_up.xnb</DestFile>
+  <DestTime>2021-06-18T18:02:00.065494+10:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2020-08-10T16:17:54+10:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

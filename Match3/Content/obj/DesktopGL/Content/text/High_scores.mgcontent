@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/Пека/source/repos/Match3/Match3/Content/text/High_scores.png</SourceFile>
-  <SourceTime>2021-04-29T19:19:54.1671005+10:00</SourceTime>
-  <DestFile>C:/Users/Пека/source/repos/Match3/Match3/Content/bin/DesktopGL/Content/text/High_scores.xnb</DestFile>
-  <DestTime>2021-05-26T21:59:38.0924399+10:00</DestTime>
+  <SourceFile>C:/Users/DeathWing/Documents/GitHub/Match3/Match3/Content/text/High_scores.png</SourceFile>
+  <SourceTime>2021-06-18T17:58:29.7949195+10:00</SourceTime>
+  <DestFile>C:/Users/DeathWing/Documents/GitHub/Match3/Match3/Content/bin/DesktopGL/Content/text/High_scores.xnb</DestFile>
+  <DestTime>2021-06-18T18:02:00.2124364+10:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2020-08-10T16:17:54+10:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
